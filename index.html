@@ -209,6 +209,39 @@ input[type=number]:focus{border-color:var(--blue)}
 .toast.err{border-color:var(--red);color:var(--red-t)}
 .toast.jp{border-color:var(--gold);color:var(--gold);font-size:16px;font-weight:700}
 
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  body{overflow-x:hidden}
+  header{padding:8px 10px;gap:6px;flex-wrap:wrap}
+  .logo{font-size:15px}
+  .hstats{gap:4px;order:3;width:100%}
+  .hs{padding:3px 8px;flex:1;text-align:center}
+  .hs label{font-size:9px}
+  .hs .v{font-size:12px}
+  .header-right{margin-left:auto;gap:4px}
+  .nav-btn,.logout-btn{padding:4px 7px;font-size:10px}
+  .jackpot-bar{padding:5px 10px;font-size:11px;text-align:center}
+  .jp-hint{display:none}
+  .jp-amount{font-size:14px}
+  .app-body{display:flex!important;flex-direction:column!important;width:100%!important;height:auto!important;overflow:visible!important}
+  #view-game{display:flex!important;flex-direction:column!important;width:100%!important}
+  .sidebar{display:none!important;width:100%!important;max-width:100%!important;min-width:0!important;border-right:none!important;border-bottom:1px solid var(--border);max-height:260px;overflow-y:auto}
+  .center{display:none!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:280px;max-height:400px;border-right:none!important}
+  .rpanel{width:100%!important;max-width:100%!important;min-width:0!important;border-left:none!important;border-top:1px solid var(--border);display:flex!important}
+  .sidebar.mshow{display:flex!important}
+  .center.mshow{display:flex!important}
+  #view-leaderboard,#view-recent,#view-tournament,#view-chat,#view-admin{width:100%!important}
+  .view-inner{padding:12px}
+  .lb-table{font-size:11px}
+  .lb-table th,.lb-table td{padding:5px 6px}
+  .chat-messages{height:55vh}
+  .admin-grid{grid-template-columns:1fr 1fr}
+  .form-row{flex-direction:column}
+  .rp-section{padding:10px}
+  .roll-btn{font-size:14px;padding:12px}
+  #dice-canvas-wrap{height:140px}
+}
+
 /* SCROLLBARS */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
