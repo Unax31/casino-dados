@@ -7,533 +7,926 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0f13;--bg2:#16161d;--bg3:#1e1e28;--bg4:#262633;
-  --border:#2e2e3e;--border2:#3d3d52;
-  --text:#e8e8f0;--text2:#9090a8;--text3:#5a5a72;
-  --green:#2ecc71;--green-bg:#0d2e1a;--green-text:#4eff97;
-  --red:#e74c3c;--red-bg:#2e0d0d;--red-text:#ff6b6b;
-  --yellow:#f1c40f;--yellow-bg:#2e280d;--yellow-text:#ffe066;
-  --blue:#3b82f6;--blue-bg:#0d1a2e;--blue-text:#7eb8ff;
-  --purple:#8b5cf6;--radius:8px;--radius2:12px;
+  --bg:#0a0a0f;--bg2:#111118;--bg3:#18181f;--bg4:#20202a;
+  --border:#2a2a38;--border2:#383848;
+  --text:#e8e8f4;--text2:#8888aa;--text3:#4a4a66;
+  --green:#00c96e;--green-d:#003a1e;--green-t:#00ff88;
+  --red:#e74c3c;--red-d:#2e0a0a;--red-t:#ff6b6b;
+  --yellow:#f0c040;--yellow-d:#2a2000;--yellow-t:#ffe066;
+  --blue:#4a90e2;--blue-d:#0a1830;--blue-t:#7ab8ff;
+  --purple:#9b59b6;--gold:#ffd700;
+  --r:8px;--r2:12px;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* HEADER */
-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.logo{font-size:22px;font-weight:700;color:var(--yellow);letter-spacing:-0.5px}
-.logo span{color:var(--text2);font-weight:400;font-size:14px;margin-left:6px}
-.header-stats{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap}
-.hstat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:6px 14px;font-size:13px}
-.hstat label{color:var(--text3);font-size:11px;display:block;margin-bottom:2px}
-.hstat .val{font-weight:600;color:var(--text)}
-.hstat .val.green{color:var(--green-text)}
-.hstat .val.red{color:var(--red-text)}
-.hstat .val.yellow{color:var(--yellow-text)}
+/* AUTH SCREEN */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 70%)}
+.auth-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:2.5rem;width:360px;text-align:center}
+.auth-logo{font-size:48px;margin-bottom:8px}
+.auth-title{font-size:24px;font-weight:700;color:var(--yellow-t);margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--text2);margin-bottom:2rem}
+.auth-tabs{display:flex;gap:0;margin-bottom:1.5rem;background:var(--bg3);border-radius:var(--r);overflow:hidden}
+.auth-tab{flex:1;padding:8px;font-size:13px;font-weight:600;cursor:pointer;background:none;border:none;color:var(--text2);transition:all .15s}
+.auth-tab.active{background:var(--blue-d);color:var(--blue-t)}
+.auth-field{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:10px 14px;font-size:14px;margin-bottom:10px;outline:none}
+.auth-field:focus{border-color:var(--blue)}
+.auth-btn{width:100%;padding:11px;font-size:14px;font-weight:700;background:var(--blue);color:#fff;border:none;border-radius:var(--r);cursor:pointer;margin-top:6px;transition:all .15s}
+.auth-btn:hover{filter:brightness(1.15)}
+.auth-error{color:var(--red-t);font-size:12px;margin-top:8px;min-height:18px}
 
-/* CONFIG ROW */
-.config-bar{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.config-bar label{font-size:12px;color:var(--text3)}
-select,input[type=number]{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius);padding:5px 10px;font-size:13px;outline:none}
-select:focus,input:focus{border-color:var(--blue)}
-.sep{width:1px;height:20px;background:var(--border);margin:0 4px}
-.reset-btn{margin-left:auto;background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--radius);padding:5px 14px;font-size:12px;cursor:pointer;transition:all .15s}
-.reset-btn:hover{border-color:var(--red);color:var(--red-text)}
+/* MAIN APP */
+#app{display:none;flex-direction:column;height:100vh}
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.logo{font-size:20px;font-weight:800;color:var(--yellow-t)}
+.logo span{font-size:12px;color:var(--text3);font-weight:400;margin-left:4px}
+.hstats{display:flex;gap:8px;flex-wrap:wrap}
+.hs{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 12px;font-size:12px}
+.hs label{color:var(--text3);display:block;font-size:10px;margin-bottom:1px}
+.hs .v{font-weight:700}
+.hs .v.g{color:var(--green-t)}
+.hs .v.r{color:var(--red-t)}
+.hs .v.y{color:var(--yellow-t)}
+.header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.nav-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:var(--r);padding:5px 12px;font-size:12px;cursor:pointer;transition:all .15s}
+.nav-btn:hover,.nav-btn.active{background:var(--bg4);color:var(--text);border-color:var(--border2)}
+.logout-btn{background:none;border:1px solid var(--red-d);color:var(--red-t);border-radius:var(--r);padding:5px 12px;font-size:12px;cursor:pointer}
 
-/* MAIN */
-main{display:grid;grid-template-columns:220px 1fr 320px;flex:1;overflow:hidden}
+/* JACKPOT BAR */
+.jackpot-bar{background:linear-gradient(90deg,#1a0a00,#2a1500,#1a0a00);border-bottom:1px solid #4a2000;padding:6px 16px;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;flex-shrink:0}
+.jp-label{color:#ff8800;font-weight:600}
+.jp-amount{color:var(--gold);font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.jp-hint{color:#664400;font-size:11px}
+
+/* MAIN LAYOUT */
+.app-body{display:grid;grid-template-columns:200px 1fr 300px;flex:1;overflow:hidden;min-height:0}
+
+/* TABS */
+.view{display:none;flex-direction:column;overflow:hidden}
+.view.active{display:flex}
 
 /* LEFT SIDEBAR */
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto}
-.sidebar-title{padding:12px 14px 8px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border)}
-.cat-item{padding:9px 14px;font-size:13px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:all .1s;user-select:none}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.cfg-section{padding:10px;border-bottom:1px solid var(--border)}
+.cfg-section label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:4px}
+select{width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:5px 8px;font-size:12px;outline:none;margin-bottom:6px}
+.cat-header{padding:8px 12px 4px;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px}
+.cat-item{padding:8px 12px;font-size:12px;color:var(--text2);cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;transition:all .1s;user-select:none}
 .cat-item:hover{background:var(--bg3);color:var(--text)}
-.cat-item.active{background:var(--blue-bg);color:var(--blue-text);border-left:3px solid var(--blue)}
-.cat-count{font-size:11px;background:var(--bg4);border-radius:10px;padding:1px 7px;color:var(--text3)}
-.cat-item.active .cat-count{background:rgba(59,130,246,.2);color:var(--blue-text)}
+.cat-item.active{background:var(--blue-d);color:var(--blue-t);border-left:3px solid var(--blue)}
+.cat-n{font-size:10px;background:var(--bg4);border-radius:8px;padding:1px 6px;color:var(--text3)}
 
-/* CENTER: BETS TABLE */
-.bets-area{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
-.bets-header{padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg2);font-size:13px;font-weight:600;color:var(--text2);display:flex;align-items:center;gap:8px}
+/* CENTER */
+.center{display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.center-header{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg2);font-size:13px;color:var(--text2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .bets-scroll{overflow-y:auto;flex:1}
 table{width:100%;border-collapse:collapse}
-th{position:sticky;top:0;background:var(--bg3);font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);z-index:1}
+th{position:sticky;top:0;z-index:1;background:var(--bg3);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
 th.r{text-align:right}
-td{padding:8px 14px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text)}
+td{padding:7px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text)}
 td.r{text-align:right}
 tr:hover td{background:var(--bg3);cursor:pointer}
-tr.sel td{background:var(--blue-bg)}
-.odds-pill{display:inline-block;background:var(--green-bg);color:var(--green-text);font-size:12px;font-weight:600;border-radius:6px;padding:2px 8px}
-.prob-text{color:var(--text3);font-size:12px}
+.odds-tag{display:inline-block;background:var(--green-d);color:var(--green-t);font-size:11px;font-weight:700;border-radius:5px;padding:1px 7px}
+.prob-c{color:var(--text3);font-size:11px}
 
 /* RIGHT PANEL */
-.right-panel{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-
-/* BET BUILDER */
-.builder{padding:14px;border-bottom:1px solid var(--border)}
-.section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
-.amount-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.amount-row label{font-size:12px;color:var(--text3);white-space:nowrap}
-.amount-row input{flex:1;min-width:0}
-.quick-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-.qbtn{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--radius);padding:3px 10px;font-size:12px;cursor:pointer;transition:all .1s}
-.qbtn:hover{background:var(--bg4);color:var(--text)}
-.queue-list{min-height:40px;margin-bottom:10px}
-.empty-q{font-size:12px;color:var(--text3);padding:8px 0}
-.q-item{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;margin-bottom:5px;font-size:12px}
-.q-name{flex:1;color:var(--text)}
-.q-odds{color:var(--green-text);font-weight:600}
-.q-amt{color:var(--text2)}
-.q-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;line-height:1;padding:0 2px;margin-left:auto}
-.q-remove:hover{color:var(--red-text)}
-.roll-btn{width:100%;padding:11px;font-size:15px;font-weight:700;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;transition:all .15s;letter-spacing:.3px}
-.roll-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
-.roll-btn:active{transform:translateY(0)}
+.rpanel{background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.rp-section{padding:12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sec-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.amt-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.amt-row label{font-size:12px;color:var(--text3);white-space:nowrap}
+input[type=number]{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:6px 10px;font-size:13px;outline:none;width:100%}
+input[type=number]:focus{border-color:var(--blue)}
+.qbtns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px}
+.qb{background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--r);padding:3px 8px;font-size:11px;cursor:pointer;transition:all .1s}
+.qb:hover{background:var(--bg4);color:var(--text)}
+.queue-list{margin-bottom:8px;min-height:32px}
+.empty-q{font-size:12px;color:var(--text3);padding:4px 0}
+.qi{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 8px;margin-bottom:4px;font-size:11px}
+.qi-name{flex:1;color:var(--text)}
+.qi-odds{color:var(--green-t);font-weight:700}
+.qi-amt{color:var(--text2)}
+.qi-rm{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;line-height:1;padding:0 2px}
+.qi-rm:hover{color:var(--red-t)}
+.roll-btn{width:100%;padding:12px;font-size:15px;font-weight:800;background:linear-gradient(135deg,#1a3a8a,#2a5ade);color:#fff;border:none;border-radius:var(--r);cursor:pointer;letter-spacing:.5px;transition:all .15s}
+.roll-btn:hover:not(:disabled){filter:brightness(1.15);transform:translateY(-1px)}
 .roll-btn:disabled{background:var(--bg3);color:var(--text3);cursor:default;transform:none;filter:none}
 
-/* DICE DISPLAY */
-.dice-area{padding:12px 14px;border-bottom:1px solid var(--border)}
-.dice-row{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:8px}
-.die{width:42px;height:42px;border:1px solid var(--border2);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--bg3);transition:transform .2s}
-.die.bounce{animation:bounce .35s ease-out}
-@keyframes bounce{0%{transform:scale(1.2) rotate(-5deg)}50%{transform:scale(.9) rotate(3deg)}100%{transform:scale(1) rotate(0)}}
-.sum-label{text-align:center;font-size:13px;color:var(--text2)}
-.sum-label span{color:var(--yellow-text);font-weight:700;font-size:16px}
+/* DICE */
+.dice-section{padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.dice-row{display:flex;gap:6px;justify-content:center;margin-bottom:6px}
+.die{width:40px;height:40px;border:1px solid var(--border2);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3)}
+.die.win{border-color:var(--green);box-shadow:0 0 8px rgba(0,201,110,.3)}
+.sum-line{text-align:center;font-size:12px;color:var(--text2)}
+.sum-line b{color:var(--yellow-t);font-size:15px}
 
-/* RESULT LIST */
-.results-list{padding:8px 14px;border-bottom:1px solid var(--border)}
-.r-item{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
-.r-item:last-child{border-bottom:none}
-.r-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px;flex-shrink:0}
-.r-badge.won{background:var(--green-bg);color:var(--green-text)}
-.r-badge.lost{background:var(--red-bg);color:var(--red-text)}
-.r-name{flex:1;color:var(--text2)}
-.r-pay{font-weight:600}
-.r-pay.pos{color:var(--green-text)}
-.r-pay.neg{color:var(--red-text)}
-.net-row{padding:8px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;justify-content:space-between}
-.net-row span.pos{color:var(--green-text)}
-.net-row span.neg{color:var(--red-text)}
+/* RESULTS */
+.results-section{padding:8px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ri{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px}
+.ri:last-child{border-bottom:none}
+.ri-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.ri-badge.w{background:var(--green-d);color:var(--green-t)}
+.ri-badge.l{background:var(--red-d);color:var(--red-t)}
+.ri-name{flex:1;color:var(--text2)}
+.ri-pay{font-weight:700}
+.ri-pay.p{color:var(--green-t)}
+.ri-pay.n{color:var(--red-t)}
+.net-line{padding:7px 12px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;display:flex;justify-content:space-between;flex-shrink:0}
+.net-line span.p{color:var(--green-t)}
+.net-line span.n{color:var(--red-t)}
+.jackpot-win{padding:10px 12px;background:linear-gradient(135deg,#2a1500,#1a0800);border-bottom:1px solid var(--gold);text-align:center;font-size:13px;color:var(--gold);font-weight:700}
 
-/* HISTORY */
-.history-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.hist-header{padding:10px 14px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--border)}
+/* HISTORY (right panel bottom) */
+.hist-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.hist-head{padding:8px 12px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);flex-shrink:0}
 .hist-scroll{overflow-y:auto;flex:1}
-.hist-row{display:flex;align-items:center;gap:6px;padding:7px 14px;border-bottom:1px solid var(--border);font-size:11px}
-.hist-dice{font-family:monospace;color:var(--text);font-size:12px}
-.hist-bets{flex:1;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 6px}
-.hist-net{font-weight:600;flex-shrink:0}
-.hist-net.pos{color:var(--green-text)}
-.hist-net.neg{color:var(--red-text)}
+.hr{display:flex;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:11px}
+.hr-dice{font-family:monospace;color:var(--text);font-size:11px}
+.hr-bets{flex:1;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 4px}
+.hr-net{font-weight:700;flex-shrink:0}
+.hr-net.p{color:var(--green-t)}
+.hr-net.n{color:var(--red-t)}
+
+/* OTHER VIEWS */
+.view-inner{padding:20px;overflow-y:auto;flex:1}
+.view-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:16px}
+
+/* LEADERBOARD */
+.lb-table{width:100%;border-collapse:collapse;font-size:13px}
+.lb-table th{text-align:left;padding:8px 12px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);background:var(--bg3)}
+.lb-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.lb-table tr:hover td{background:var(--bg3)}
+.rank-1{color:var(--gold);font-weight:800}
+.rank-2{color:#c0c0c0;font-weight:700}
+.rank-3{color:#cd7f32;font-weight:700}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.chat-msg{font-size:13px}
+.chat-msg .chat-user{font-weight:700;color:var(--blue-t);margin-right:6px}
+.chat-msg .chat-text{color:var(--text)}
+.chat-msg .chat-time{font-size:10px;color:var(--text3);margin-left:4px}
+.chat-input-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.chat-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:8px 12px;font-size:13px;outline:none}
+.chat-input-row input:focus{border-color:var(--blue)}
+.send-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600}
+.send-btn:hover{filter:brightness(1.1)}
+
+/* RECENT ROLLS */
+.rr-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.rr-user{font-weight:700;color:var(--blue-t);min-width:80px}
+.rr-dice{font-family:monospace;color:var(--text2)}
+.rr-net{font-weight:700;margin-left:auto}
+
+/* TOURNAMENT */
+.tourn-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:16px;margin-bottom:16px}
+.tourn-name{font-size:18px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.tourn-prize{font-size:14px;color:var(--green-t);margin-bottom:8px}
+.tourn-time{font-size:12px;color:var(--text2)}
+
+/* ADMIN */
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.admin-card{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:16px}
+.admin-card h3{font-size:12px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.admin-card .big{font-size:24px;font-weight:800;color:var(--text)}
+.admin-form{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:16px;margin-bottom:16px}
+.admin-form h3{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text2)}
+.form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
+.form-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px}
+.form-field label{font-size:11px;color:var(--text3)}
+.form-field input{background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:7px 10px;font-size:13px;outline:none}
+.admin-btn{background:var(--blue);color:#fff;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600;white-space:nowrap}
+.admin-btn:hover{filter:brightness(1.1)}
+.admin-btn.danger{background:var(--red)}
+.admin-users{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.admin-users th{text-align:left;padding:7px 10px;font-size:10px;color:var(--text3);border-bottom:1px solid var(--border);background:var(--bg4)}
+.admin-users td{padding:7px 10px;border-bottom:1px solid var(--border)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:10px 20px;font-size:13px;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green-t)}
+.toast.err{border-color:var(--red);color:var(--red-t)}
+.toast.jp{border-color:var(--gold);color:var(--gold);font-size:16px;font-weight:700}
 
 /* SCROLLBARS */
-::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-
-/* RESPONSIVE */
-@media(max-width:900px){main{grid-template-columns:1fr}
-.sidebar,.right-panel{display:none}.sidebar.open,.right-panel.open{display:block}}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">🎲 Casino de Dados <span>v2.0</span></div>
-  <div class="header-stats">
-    <div class="hstat"><label>Saldo</label><div class="val yellow" id="h-balance">€1.000</div></div>
-    <div class="hstat"><label>Tiradas</label><div class="val" id="h-rolls">0</div></div>
-    <div class="hstat"><label>Ganado</label><div class="val green" id="h-won">€0</div></div>
-    <div class="hstat"><label>Perdido</label><div class="val red" id="h-lost">€0</div></div>
-    <div class="hstat"><label>ROI</label><div class="val" id="h-roi">—</div></div>
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">🎲</div>
+    <div class="auth-title">Casino de Dados</div>
+    <div class="auth-sub">Juego simulado — dinero virtual</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="showTab('login')">Entrar</button>
+      <button class="auth-tab" onclick="showTab('register')">Registro</button>
+    </div>
+    <input class="auth-field" id="auth-user" type="text" placeholder="Usuario" autocomplete="off">
+    <input class="auth-field" id="auth-pass" type="password" placeholder="Contraseña">
+    <input class="auth-field" id="auth-pass2" type="password" placeholder="Repetir contraseña" style="display:none">
+    <button class="auth-btn" onclick="doAuth()">Entrar</button>
+    <div class="auth-error" id="auth-err"></div>
   </div>
-</header>
-
-<div class="config-bar">
-  <label>Dados:</label>
-  <select id="sel-dice" onchange="changeConfig()">
-    <option value="5" selected>5 dados</option>
-    <option value="6">6 dados</option>
-    <option value="7">7 dados</option>
-  </select>
-  <div class="sep"></div>
-  <label>House edge:</label>
-  <select id="sel-edge" onchange="changeConfig()">
-    <option value="02">2%</option>
-    <option value="03">3%</option>
-    <option value="05" selected>5%</option>
-    <option value="10">10%</option>
-  </select>
-  <div class="sep"></div>
-  <label>Saldo inicial:</label>
-  <input type="number" id="inp-balance" value="1000" min="10" max="1000000" step="10" style="width:100px">
-  <button class="reset-btn" onclick="resetGame()">↺ Reiniciar</button>
 </div>
 
-<main>
-  <!-- LEFT: categories -->
-  <div class="sidebar">
-    <div class="sidebar-title">Categorías</div>
-    <div id="cat-list"></div>
+<!-- MAIN APP -->
+<div id="app">
+  <header>
+    <div class="logo">🎲 Casino <span>de Dados</span></div>
+    <div class="hstats">
+      <div class="hs"><label>Saldo</label><div class="v y" id="h-bal">€1.000</div></div>
+      <div class="hs"><label>Tiradas</label><div class="v" id="h-rolls">0</div></div>
+      <div class="hs"><label>Ganado</label><div class="v g" id="h-won">€0</div></div>
+      <div class="hs"><label>ROI</label><div class="v" id="h-roi">—</div></div>
+    </div>
+    <div class="header-right">
+      <button class="nav-btn active" onclick="showView('game')" id="nav-game">Jugar</button>
+      <button class="nav-btn" onclick="showView('leaderboard')" id="nav-leaderboard">Ranking</button>
+      <button class="nav-btn" onclick="showView('recent')" id="nav-recent">En vivo</button>
+      <button class="nav-btn" onclick="showView('tournament')" id="nav-tournament">Torneo</button>
+      <button class="nav-btn" onclick="showView('chat')" id="nav-chat">Chat</button>
+      <button class="nav-btn" id="nav-admin" style="display:none" onclick="showView('admin')">Admin</button>
+      <button class="logout-btn" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <div class="jackpot-bar">
+    <span class="jp-label">🏆 JACKPOT</span>
+    <span class="jp-amount" id="jp-amount">€5.000</span>
+    <span class="jp-hint">— gánalo con todos los dados iguales (apuesta mín. €5)</span>
   </div>
 
-  <!-- CENTER: bets table -->
-  <div class="bets-area">
-    <div class="bets-header" id="bets-header">Selecciona una categoría</div>
-    <div class="bets-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Apuesta</th>
-            <th class="r">Prob%</th>
-            <th class="r">Cuota</th>
-          </tr>
-        </thead>
-        <tbody id="bets-tbody"></tbody>
-      </table>
-    </div>
-  </div>
+  <!-- GAME VIEW -->
+  <div class="app-body">
+    <div class="view active" id="view-game" style="display:contents">
 
-  <!-- RIGHT: builder + results + history -->
-  <div class="right-panel">
-    <div class="builder">
-      <div class="section-label">Importe por apuesta</div>
-      <div class="amount-row">
-        <label>€</label>
-        <input type="number" id="inp-amt" value="10" min="1" step="1">
+      <!-- LEFT: categories -->
+      <div class="sidebar">
+        <div class="cfg-section">
+          <label>Dados</label>
+          <select id="sel-dice" onchange="loadBets()">
+            <option value="5" selected>5 dados</option>
+            <option value="6">6 dados</option>
+            <option value="7">7 dados</option>
+          </select>
+          <input type="hidden" id="sel-edge" value="0.05">
+        </div>
+        <div class="cat-header">Categorías</div>
+        <div id="cat-list"></div>
       </div>
-      <div class="quick-row">
-        <button class="qbtn" onclick="setAmt(1)">1</button>
-        <button class="qbtn" onclick="setAmt(5)">5</button>
-        <button class="qbtn" onclick="setAmt(10)">10</button>
-        <button class="qbtn" onclick="setAmt(25)">25</button>
-        <button class="qbtn" onclick="setAmt(50)">50</button>
-        <button class="qbtn" onclick="setAmt(100)">100</button>
+
+      <!-- CENTER: bets table -->
+      <div class="center">
+        <div class="center-header">
+          <span id="cat-title">Selecciona una categoría</span>
+          <span style="font-size:11px;color:var(--text3)">Haz clic para añadir</span>
+        </div>
+        <div class="bets-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Apuesta</th>
+                <th class="r">Prob%</th>
+                <th class="r">Cuota</th>
+              </tr>
+            </thead>
+            <tbody id="bets-tbody"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="section-label">Cola de apuestas</div>
-      <div class="queue-list" id="queue-list">
-        <div class="empty-q">Haz clic en una apuesta para añadirla</div>
+
+      <!-- RIGHT: builder + results + history -->
+      <div class="rpanel">
+        <div class="rp-section">
+          <div class="sec-label">Importe (€)</div>
+          <div class="amt-row">
+            <input type="number" id="inp-amt" value="10" min="1" step="1" style="width:100px">
+          </div>
+          <div class="qbtns">
+            <button class="qb" onclick="setA(1)">1</button>
+            <button class="qb" onclick="setA(5)">5</button>
+            <button class="qb" onclick="setA(10)">10</button>
+            <button class="qb" onclick="setA(25)">25</button>
+            <button class="qb" onclick="setA(50)">50</button>
+            <button class="qb" onclick="setA(100)">100</button>
+            <button class="qb" onclick="setA(500)">500</button>
+          </div>
+          <div class="sec-label">Cola de apuestas</div>
+          <div class="queue-list" id="queue-list"><div class="empty-q">Haz clic en una apuesta ↑</div></div>
+          <button class="roll-btn" id="roll-btn" onclick="doRoll()" disabled>🎲 TIRAR DADOS</button>
+        </div>
+
+        <div id="dice-section" style="display:none" class="dice-section">
+          <div class="dice-row" id="dice-row"></div>
+          <div class="sum-line">Suma: <b id="sum-val">—</b></div>
+        </div>
+
+        <div id="jp-win-section" style="display:none" class="jackpot-win">
+          🏆 ¡JACKPOT! Ganaste <span id="jp-win-amt"></span>
+        </div>
+
+        <div id="results-section" style="display:none">
+          <div class="results-section" id="results-list"></div>
+          <div class="net-line">Resultado neto: <span id="net-val"></span></div>
+        </div>
+
+        <div class="hist-area">
+          <div class="hist-head">Mi historial</div>
+          <div class="hist-scroll" id="hist-scroll">
+            <div style="padding:10px 12px;font-size:12px;color:var(--text3)">Sin tiradas aún.</div>
+          </div>
+        </div>
       </div>
-      <button class="roll-btn" id="roll-btn" onclick="roll()" disabled>🎲 TIRAR DADOS</button>
+
+    </div><!-- /game view -->
+
+    <!-- LEADERBOARD VIEW -->
+    <div class="view" id="view-leaderboard" style="display:none;grid-column:1/-1">
+      <div class="view-inner">
+        <div class="view-title">🏆 Ranking global</div>
+        <table class="lb-table">
+          <thead><tr><th>#</th><th>Jugador</th><th>Saldo</th><th>Apostado</th><th>Tiradas</th><th>ROI</th></tr></thead>
+          <tbody id="lb-tbody"></tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="dice-area" id="dice-area" style="display:none">
-      <div class="dice-row" id="dice-row"></div>
-      <div class="sum-label">Suma: <span id="sum-val">—</span></div>
-    </div>
-
-    <div id="results-area" style="display:none">
-      <div class="results-list" id="results-list"></div>
-      <div class="net-row">Neto: <span id="net-val"></span></div>
-    </div>
-
-    <div class="history-area">
-      <div class="hist-header">Historial</div>
-      <div class="hist-scroll" id="hist-scroll">
-        <div style="padding:12px 14px;font-size:12px;color:var(--text3)">Aún no hay tiradas.</div>
+    <!-- RECENT ROLLS VIEW -->
+    <div class="view" id="view-recent" style="display:none;grid-column:1/-1">
+      <div class="view-inner">
+        <div class="view-title">⚡ Tiradas en vivo</div>
+        <div id="recent-list"></div>
       </div>
     </div>
-  </div>
-</main>
+
+    <!-- TOURNAMENT VIEW -->
+    <div class="view" id="view-tournament" style="display:none;grid-column:1/-1">
+      <div class="view-inner">
+        <div class="view-title">🎯 Torneo activo</div>
+        <div id="tournament-content"></div>
+      </div>
+    </div>
+
+    <!-- CHAT VIEW -->
+    <div class="view" id="view-chat" style="display:none;grid-column:1/-1">
+      <div class="chat-wrap">
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Escribe un mensaje..." maxlength="300"
+                 onkeydown="if(event.key==='Enter') sendChat()">
+          <button class="send-btn" onclick="sendChat()">Enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div class="view" id="view-admin" style="display:none;grid-column:1/-1">
+      <div class="view-inner">
+        <div class="view-title">⚙️ Panel de administración</div>
+        <div class="admin-grid" id="admin-stats-grid"></div>
+
+        <div class="admin-form">
+          <h3>Resetear saldo de un jugador</h3>
+          <div class="form-row">
+            <div class="form-field"><label>Usuario</label><input id="adm-user" type="text" placeholder="nombre"></div>
+            <div class="form-field"><label>Nuevo saldo (€)</label><input id="adm-bal" type="number" value="1000"></div>
+            <button class="admin-btn" onclick="adminReset()">Resetear</button>
+          </div>
+        </div>
+
+        <div class="admin-form">
+          <h3>Añadir saldo a un jugador</h3>
+          <div class="form-row">
+            <div class="form-field"><label>Usuario</label><input id="adm-add-user" type="text" placeholder="nombre"></div>
+            <div class="form-field"><label>Cantidad (€)</label><input id="adm-add-amt" type="number" value="500"></div>
+            <button class="admin-btn" onclick="adminAdd()">Añadir</button>
+          </div>
+        </div>
+
+        <div class="admin-form">
+          <h3>Crear torneo</h3>
+          <div class="form-row">
+            <div class="form-field"><label>Nombre</label><input id="adm-t-name" type="text" placeholder="Torneo nocturno"></div>
+            <div class="form-field"><label>Duración (horas)</label><input id="adm-t-hours" type="number" value="24"></div>
+            <div class="form-field"><label>Premio (€)</label><input id="adm-t-prize" type="number" value="10000"></div>
+            <button class="admin-btn" onclick="adminTournament()">Crear</button>
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:700;color:var(--text2);margin-bottom:8px">Todos los usuarios</div>
+        <table class="admin-users">
+          <thead><tr><th>ID</th><th>Usuario</th><th>Saldo</th><th>Apostado</th><th>Tiradas</th><th>Admin</th><th>Último acceso</th></tr></thead>
+          <tbody id="admin-users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- app-body -->
+</div><!-- app -->
+
+<div class="toast" id="toast"></div>
 
 <script>
-const BETS_DATA = {"5": {"Suma": [{"id": "sum_even", "name": "Suma par", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_odd", "name": "Suma impar", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_exact_5", "name": "Suma exacta 5", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "sum_exact_6", "name": "Suma exacta 6", "prob": 0.000643, "odds_02": 1524.0, "odds_03": 1508.0, "odds_05": 1477.0, "odds_10": 1399.0}, {"id": "sum_exact_7", "name": "Suma exacta 7", "prob": 0.00192901, "odds_02": 508.0, "odds_03": 502.0, "odds_05": 492.0, "odds_10": 466.0}, {"id": "sum_exact_8", "name": "Suma exacta 8", "prob": 0.00450103, "odds_02": 217.0, "odds_03": 215.0, "odds_05": 211.0, "odds_10": 199.0}, {"id": "sum_exact_9", "name": "Suma exacta 9", "prob": 0.00900206, "odds_02": 108.0, "odds_03": 107.0, "odds_05": 105.0, "odds_10": 99.0}, {"id": "sum_exact_10", "name": "Suma exacta 10", "prob": 0.0162037, "odds_02": 60.0, "odds_03": 59.0, "odds_05": 58.0, "odds_10": 55.0}, {"id": "sum_exact_11", "name": "Suma exacta 11", "prob": 0.02636317, "odds_02": 37.0, "odds_03": 36.0, "odds_05": 36.0, "odds_10": 34.0}, {"id": "sum_exact_12", "name": "Suma exacta 12", "prob": 0.03922325, "odds_02": 24.0, "odds_03": 24.0, "odds_05": 24.0, "odds_10": 22.0}, {"id": "sum_exact_13", "name": "Suma exacta 13", "prob": 0.05401235, "odds_02": 18.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "sum_exact_14", "name": "Suma exacta 14", "prob": 0.06944444, "odds_02": 14.0, "odds_03": 13.0, "odds_05": 13.0, "odds_10": 12.0}, {"id": "sum_exact_15", "name": "Suma exacta 15", "prob": 0.08371914, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_16", "name": "Suma exacta 16", "prob": 0.0945216, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "sum_exact_17", "name": "Suma exacta 17", "prob": 0.10030864, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 8.0}, {"id": "sum_exact_18", "name": "Suma exacta 18", "prob": 0.10030864, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 8.0}, {"id": "sum_exact_19", "name": "Suma exacta 19", "prob": 0.0945216, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "sum_exact_20", "name": "Suma exacta 20", "prob": 0.08371914, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_21", "name": "Suma exacta 21", "prob": 0.06944444, "odds_02": 14.0, "odds_03": 13.0, "odds_05": 13.0, "odds_10": 12.0}, {"id": "sum_exact_22", "name": "Suma exacta 22", "prob": 0.05401235, "odds_02": 18.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "sum_exact_23", "name": "Suma exacta 23", "prob": 0.03922325, "odds_02": 24.0, "odds_03": 24.0, "odds_05": 24.0, "odds_10": 22.0}, {"id": "sum_exact_24", "name": "Suma exacta 24", "prob": 0.02636317, "odds_02": 37.0, "odds_03": 36.0, "odds_05": 36.0, "odds_10": 34.0}, {"id": "sum_exact_25", "name": "Suma exacta 25", "prob": 0.0162037, "odds_02": 60.0, "odds_03": 59.0, "odds_05": 58.0, "odds_10": 55.0}, {"id": "sum_exact_26", "name": "Suma exacta 26", "prob": 0.00900206, "odds_02": 108.0, "odds_03": 107.0, "odds_05": 105.0, "odds_10": 99.0}, {"id": "sum_exact_27", "name": "Suma exacta 27", "prob": 0.00450103, "odds_02": 217.0, "odds_03": 215.0, "odds_05": 211.0, "odds_10": 199.0}, {"id": "sum_exact_28", "name": "Suma exacta 28", "prob": 0.00192901, "odds_02": 508.0, "odds_03": 502.0, "odds_05": 492.0, "odds_10": 466.0}, {"id": "sum_exact_29", "name": "Suma exacta 29", "prob": 0.000643, "odds_02": 1524.0, "odds_03": 1508.0, "odds_05": 1477.0, "odds_10": 1399.0}, {"id": "sum_exact_30", "name": "Suma exacta 30", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "sum_gt_15", "name": "Suma > 15", "prob": 0.69483025, "odds_02": 1.4, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "sum_lt_15", "name": "Suma < 15", "prob": 0.22145062, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "sum_gt_16", "name": "Suma > 16", "prob": 0.60030864, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.4}, {"id": "sum_lt_16", "name": "Suma < 16", "prob": 0.30516975, "odds_02": 3.2, "odds_03": 3.1, "odds_05": 3.1, "odds_10": 2.9}, {"id": "sum_gt_17", "name": "Suma > 17", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_lt_17", "name": "Suma < 17", "prob": 0.39969136, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "sum_gt_18", "name": "Suma > 18", "prob": 0.39969136, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "sum_lt_18", "name": "Suma < 18", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_gt_19", "name": "Suma > 19", "prob": 0.30516975, "odds_02": 3.2, "odds_03": 3.1, "odds_05": 3.1, "odds_10": 2.9}, {"id": "sum_lt_19", "name": "Suma < 19", "prob": 0.60030864, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.4}, {"id": "sum_between_5_11", "name": "Suma entre 5 y 11", "prob": 0.05877058, "odds_02": 16.0, "odds_03": 16.0, "odds_05": 16.0, "odds_10": 15.0}, {"id": "sum_between_14_20", "name": "Suma entre 14 y 20", "prob": 0.62654321, "odds_02": 1.5, "odds_03": 1.5, "odds_05": 1.5, "odds_10": 1.4}, {"id": "sum_between_24_30", "name": "Suma entre 24 y 30", "prob": 0.05877058, "odds_02": 16.0, "odds_03": 16.0, "odds_05": 16.0, "odds_10": 15.0}], "Repeticiones": [{"id": "at_least_pair", "name": "Al menos una pareja", "prob": 0.90740741, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "exactly_one_pair", "name": "Exactamente una pareja", "prob": 0.46296296, "odds_02": 2.1, "odds_03": 2.0, "odds_05": 2.0, "odds_10": 1.9}, {"id": "two_pairs", "name": "Dos parejas", "prob": 0.23148148, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "three_of_kind", "name": "Trío", "prob": 0.15432099, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "full_house", "name": "Full House", "prob": 0.03858025, "odds_02": 25.0, "odds_03": 25.0, "odds_05": 24.0, "odds_10": 23.0}, {"id": "four_of_kind", "name": "Poker (4 iguales)", "prob": 0.01929012, "odds_02": 50.0, "odds_03": 50.0, "odds_05": 49.0, "odds_10": 46.0}, {"id": "five_of_kind", "name": "Repóker (5 iguales)", "prob": 0.0007716, "odds_02": 1270.0, "odds_03": 1257.0, "odds_05": 1231.0, "odds_10": 1166.0}], "Jackpot": [{"id": "all_same", "name": "Todos iguales", "prob": 0.0007716, "odds_02": 1270.0, "odds_03": 1257.0, "odds_05": 1231.0, "odds_10": 1166.0}, {"id": "all_different", "name": "Todos distintos", "prob": 0.09259259, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}], "Escaleras": [{"id": "short_straight", "name": "Escalera corta (4)", "prob": 0.15432099, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "long_straight", "name": "Escalera larga (5)", "prob": 0.0308642, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 29.0}], "Secuencias": [{"id": "seq_123", "name": "Contiene 1-2-3", "prob": 0.15817901, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "seq_234", "name": "Contiene 2-3-4", "prob": 0.15817901, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "seq_345", "name": "Contiene 3-4-5", "prob": 0.15817901, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "seq_456", "name": "Contiene 4-5-6", "prob": 0.15817901, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}], "Alto/Bajo": [{"id": "majority_high", "name": "Mayoría altos (4,5,6)", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "majority_low", "name": "Mayoría bajos (1,2,3)", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "all_high", "name": "Todos altos (4,5,6)", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "all_low", "name": "Todos bajos (1,2,3)", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}], "Comparaciones": [{"id": "more_even", "name": "Más pares que impares", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_odd", "name": "Más impares que pares", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_high", "name": "Más altos que bajos", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_low", "name": "Más bajos que altos", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}], "Rachas": [{"id": "run_any", "name": "Existe secuencia consecutiva", "prob": 0.88348765, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_2", "name": "Secuencia de longitud 2", "prob": 0.88348765, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_3", "name": "Secuencia de longitud 3", "prob": 0.44753086, "odds_02": 2.1, "odds_03": 2.1, "odds_05": 2.1, "odds_10": 2.0}, {"id": "run_length_4", "name": "Secuencia de longitud 4", "prob": 0.15432099, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "run_length_5", "name": "Secuencia de longitud 5", "prob": 0.0308642, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 29.0}], "Raras": [{"id": "all_even", "name": "Todos pares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "all_odd", "name": "Todos impares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "no_ones", "name": "Ningún 1", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "no_sixes", "name": "Ningún 6", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_0_even", "name": "Exactamente 0 dados pares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "exactly_0_odd", "name": "Exactamente 0 dados impares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "exactly_1_even", "name": "Exactamente 1 dados pares", "prob": 0.15625, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "exactly_1_odd", "name": "Exactamente 1 dados impares", "prob": 0.15625, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "exactly_2_even", "name": "Exactamente 2 dados pares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_2_odd", "name": "Exactamente 2 dados impares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_3_even", "name": "Exactamente 3 dados pares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_3_odd", "name": "Exactamente 3 dados impares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_4_even", "name": "Exactamente 4 dados pares", "prob": 0.15625, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "exactly_4_odd", "name": "Exactamente 4 dados impares", "prob": 0.15625, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "exactly_5_even", "name": "Exactamente 5 dados pares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}, {"id": "exactly_5_odd", "name": "Exactamente 5 dados impares", "prob": 0.03125, "odds_02": 31.0, "odds_03": 31.0, "odds_05": 30.0, "odds_10": 28.0}], "Rango": [{"id": "rng_exact_1", "name": "Rango = 1 (todos casi iguales)", "prob": 0.01929012, "odds_02": 50.0, "odds_03": 50.0, "odds_05": 49.0, "odds_10": 46.0}, {"id": "rng_exact_5", "name": "Rango = 5 (máxima dispersión)", "prob": 0.3279321, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "max_gte_1", "name": "Máximo >= 1", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_1", "name": "Mínimo <= 1", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "max_gte_2", "name": "Máximo >= 2", "prob": 0.9998714, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_2", "name": "Mínimo <= 2", "prob": 0.86831276, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_3", "name": "Máximo >= 3", "prob": 0.99588477, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_3", "name": "Mínimo <= 3", "prob": 0.96875, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_4", "name": "Máximo >= 4", "prob": 0.96875, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_4", "name": "Mínimo <= 4", "prob": 0.99588477, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_5", "name": "Máximo >= 5", "prob": 0.86831276, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_5", "name": "Mínimo <= 5", "prob": 0.9998714, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_6", "name": "Máximo >= 6", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "min_lte_6", "name": "Mínimo <= 6", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "range_0", "name": "Rango exacto = 0", "prob": 0.0007716, "odds_02": 1270.0, "odds_03": 1257.0, "odds_05": 1231.0, "odds_10": 1166.0}, {"id": "range_1", "name": "Rango exacto = 1", "prob": 0.01929012, "odds_02": 50.0, "odds_03": 50.0, "odds_05": 49.0, "odds_10": 46.0}, {"id": "range_2", "name": "Rango exacto = 2", "prob": 0.09259259, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "range_3", "name": "Rango exacto = 3", "prob": 0.21990741, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "range_4", "name": "Rango exacto = 4", "prob": 0.33950617, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "range_5", "name": "Rango exacto = 5", "prob": 0.3279321, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}], "Avanzadas": [{"id": "sum_prime", "name": "Suma es primo", "prob": 0.31712963, "odds_02": 3.0, "odds_03": 3.0, "odds_05": 2.9, "odds_10": 2.8}, {"id": "sum_square", "name": "Suma es cuadrado perfecto", "prob": 0.11972737, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 7.0, "odds_10": 7.0}, {"id": "sum_power2", "name": "Suma es potencia de 2", "prob": 0.09902263, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "more_distinct", "name": "Más distintos que repetidos", "prob": 0.55555556, "odds_02": 1.7, "odds_03": 1.7, "odds_05": 1.7, "odds_10": 1.6}], "Múltiplos": [{"id": "sum_mult_2", "name": "Suma múltiplo de 2", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_mult_3", "name": "Suma múltiplo de 3", "prob": 0.33333333, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "sum_mult_4", "name": "Suma múltiplo de 4", "prob": 0.2502572, "odds_02": 3.9, "odds_03": 3.8, "odds_05": 3.7, "odds_10": 3.5}, {"id": "sum_mult_5", "name": "Suma múltiplo de 5", "prob": 0.20010288, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "sum_mult_6", "name": "Suma múltiplo de 6", "prob": 0.16666667, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "sum_mult_7", "name": "Suma múltiplo de 7", "prob": 0.14274691, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 6.0}, {"id": "sum_mult_8", "name": "Suma múltiplo de 8", "prob": 0.1253858, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 7.0}, {"id": "sum_mult_9", "name": "Suma múltiplo de 9", "prob": 0.11381173, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 8.0, "odds_10": 7.0}, {"id": "sum_mult_10", "name": "Suma múltiplo de 10", "prob": 0.10005144, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 8.0}], "Valores": [{"id": "at_least_one_1", "name": "Sale al menos un 1", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_one_2", "name": "Sale al menos un 2", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_one_3", "name": "Sale al menos un 3", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_one_4", "name": "Sale al menos un 4", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_one_5", "name": "Sale al menos un 5", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_one_6", "name": "Sale al menos un 6", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "exactly_1_of_1", "name": "Exactamente 1 dados con 1", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_1", "name": "Exactamente 2 dados con 1", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_1", "name": "Exactamente 3 dados con 1", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_1", "name": "Exactamente 4 dados con 1", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_1", "name": "Al menos 1 dados con 1", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_1", "name": "Al menos 2 dados con 1", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_1", "name": "Al menos 3 dados con 1", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_1", "name": "Al menos 4 dados con 1", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}, {"id": "exactly_1_of_2", "name": "Exactamente 1 dados con 2", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_2", "name": "Exactamente 2 dados con 2", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_2", "name": "Exactamente 3 dados con 2", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_2", "name": "Exactamente 4 dados con 2", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_2", "name": "Al menos 1 dados con 2", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_2", "name": "Al menos 2 dados con 2", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_2", "name": "Al menos 3 dados con 2", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_2", "name": "Al menos 4 dados con 2", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}, {"id": "exactly_1_of_3", "name": "Exactamente 1 dados con 3", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_3", "name": "Exactamente 2 dados con 3", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_3", "name": "Exactamente 3 dados con 3", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_3", "name": "Exactamente 4 dados con 3", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_3", "name": "Al menos 1 dados con 3", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_3", "name": "Al menos 2 dados con 3", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_3", "name": "Al menos 3 dados con 3", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_3", "name": "Al menos 4 dados con 3", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}, {"id": "exactly_1_of_4", "name": "Exactamente 1 dados con 4", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_4", "name": "Exactamente 2 dados con 4", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_4", "name": "Exactamente 3 dados con 4", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_4", "name": "Exactamente 4 dados con 4", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_4", "name": "Al menos 1 dados con 4", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_4", "name": "Al menos 2 dados con 4", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_4", "name": "Al menos 3 dados con 4", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_4", "name": "Al menos 4 dados con 4", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}, {"id": "exactly_1_of_5", "name": "Exactamente 1 dados con 5", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_5", "name": "Exactamente 2 dados con 5", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_5", "name": "Exactamente 3 dados con 5", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_5", "name": "Exactamente 4 dados con 5", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_5", "name": "Al menos 1 dados con 5", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_5", "name": "Al menos 2 dados con 5", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_5", "name": "Al menos 3 dados con 5", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_5", "name": "Al menos 4 dados con 5", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}, {"id": "exactly_1_of_6", "name": "Exactamente 1 dados con 6", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_6", "name": "Exactamente 2 dados con 6", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_of_6", "name": "Exactamente 3 dados con 6", "prob": 0.03215021, "odds_02": 30.0, "odds_03": 30.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "exactly_4_of_6", "name": "Exactamente 4 dados con 6", "prob": 0.00321502, "odds_02": 304.0, "odds_03": 301.0, "odds_05": 295.0, "odds_10": 279.0}, {"id": "at_least_1_of_6", "name": "Al menos 1 dados con 6", "prob": 0.59812243, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "at_least_2_of_6", "name": "Al menos 2 dados con 6", "prob": 0.19624486, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "at_least_3_of_6", "name": "Al menos 3 dados con 6", "prob": 0.03549383, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "at_least_4_of_6", "name": "Al menos 4 dados con 6", "prob": 0.00334362, "odds_02": 293.0, "odds_03": 290.0, "odds_05": 284.0, "odds_10": 269.0}], "Patrones": [{"id": "exactly_1_distinct", "name": "Exactamente 1 valores distintos", "prob": 0.0007716, "odds_02": 1270.0, "odds_03": 1257.0, "odds_05": 1231.0, "odds_10": 1166.0}, {"id": "exactly_2_distinct", "name": "Exactamente 2 valores distintos", "prob": 0.05787037, "odds_02": 16.0, "odds_03": 16.0, "odds_05": 16.0, "odds_10": 15.0}, {"id": "exactly_3_distinct", "name": "Exactamente 3 valores distintos", "prob": 0.38580247, "odds_02": 2.5, "odds_03": 2.5, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_4_distinct", "name": "Exactamente 4 valores distintos", "prob": 0.46296296, "odds_02": 2.1, "odds_03": 2.0, "odds_05": 2.0, "odds_10": 1.9}, {"id": "exactly_5_distinct", "name": "Exactamente 5 valores distintos", "prob": 0.09259259, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}]}, "6": {"Suma": [{"id": "sum_even", "name": "Suma par", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_odd", "name": "Suma impar", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_exact_6", "name": "Suma exacta 6", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}, {"id": "sum_exact_7", "name": "Suma exacta 7", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "sum_exact_8", "name": "Suma exacta 8", "prob": 0.0004501, "odds_02": 2177.0, "odds_03": 2155.0, "odds_05": 2110.0, "odds_10": 1999.0}, {"id": "sum_exact_9", "name": "Suma exacta 9", "prob": 0.00120027, "odds_02": 816.0, "odds_03": 808.0, "odds_05": 791.0, "odds_10": 749.0}, {"id": "sum_exact_10", "name": "Suma exacta 10", "prob": 0.00270062, "odds_02": 362.0, "odds_03": 359.0, "odds_05": 351.0, "odds_10": 333.0}, {"id": "sum_exact_11", "name": "Suma exacta 11", "prob": 0.00540123, "odds_02": 181.0, "odds_03": 179.0, "odds_05": 175.0, "odds_10": 166.0}, {"id": "sum_exact_12", "name": "Suma exacta 12", "prob": 0.00977366, "odds_02": 100.0, "odds_03": 99.0, "odds_05": 97.0, "odds_10": 92.0}, {"id": "sum_exact_13", "name": "Suma exacta 13", "prob": 0.0162037, "odds_02": 60.0, "odds_03": 59.0, "odds_05": 58.0, "odds_10": 55.0}, {"id": "sum_exact_14", "name": "Suma exacta 14", "prob": 0.02488426, "odds_02": 39.0, "odds_03": 38.0, "odds_05": 38.0, "odds_10": 36.0}, {"id": "sum_exact_15", "name": "Suma exacta 15", "prob": 0.03570816, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "sum_exact_16", "name": "Suma exacta 16", "prob": 0.04816101, "odds_02": 20.0, "odds_03": 20.0, "odds_05": 19.0, "odds_10": 18.0}, {"id": "sum_exact_17", "name": "Suma exacta 17", "prob": 0.06121399, "odds_02": 16.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "sum_exact_18", "name": "Suma exacta 18", "prob": 0.07353824, "odds_02": 13.0, "odds_03": 13.0, "odds_05": 12.0, "odds_10": 12.0}, {"id": "sum_exact_19", "name": "Suma exacta 19", "prob": 0.08371914, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_20", "name": "Suma exacta 20", "prob": 0.09047068, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "sum_exact_21", "name": "Suma exacta 21", "prob": 0.09284979, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "sum_exact_22", "name": "Suma exacta 22", "prob": 0.09047068, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "sum_exact_23", "name": "Suma exacta 23", "prob": 0.08371914, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_24", "name": "Suma exacta 24", "prob": 0.07353824, "odds_02": 13.0, "odds_03": 13.0, "odds_05": 12.0, "odds_10": 12.0}, {"id": "sum_exact_25", "name": "Suma exacta 25", "prob": 0.06121399, "odds_02": 16.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "sum_exact_26", "name": "Suma exacta 26", "prob": 0.04816101, "odds_02": 20.0, "odds_03": 20.0, "odds_05": 19.0, "odds_10": 18.0}, {"id": "sum_exact_27", "name": "Suma exacta 27", "prob": 0.03570816, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "sum_exact_28", "name": "Suma exacta 28", "prob": 0.02488426, "odds_02": 39.0, "odds_03": 38.0, "odds_05": 38.0, "odds_10": 36.0}, {"id": "sum_exact_29", "name": "Suma exacta 29", "prob": 0.0162037, "odds_02": 60.0, "odds_03": 59.0, "odds_05": 58.0, "odds_10": 55.0}, {"id": "sum_exact_30", "name": "Suma exacta 30", "prob": 0.00977366, "odds_02": 100.0, "odds_03": 99.0, "odds_05": 97.0, "odds_10": 92.0}, {"id": "sum_exact_31", "name": "Suma exacta 31", "prob": 0.00540123, "odds_02": 181.0, "odds_03": 179.0, "odds_05": 175.0, "odds_10": 166.0}, {"id": "sum_exact_32", "name": "Suma exacta 32", "prob": 0.00270062, "odds_02": 362.0, "odds_03": 359.0, "odds_05": 351.0, "odds_10": 333.0}, {"id": "sum_exact_33", "name": "Suma exacta 33", "prob": 0.00120027, "odds_02": 816.0, "odds_03": 808.0, "odds_05": 791.0, "odds_10": 749.0}, {"id": "sum_exact_34", "name": "Suma exacta 34", "prob": 0.0004501, "odds_02": 2177.0, "odds_03": 2155.0, "odds_05": 2110.0, "odds_10": 1999.0}, {"id": "sum_exact_35", "name": "Suma exacta 35", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "sum_exact_36", "name": "Suma exacta 36", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}, {"id": "sum_gt_19", "name": "Suma > 19", "prob": 0.63689558, "odds_02": 1.5, "odds_03": 1.5, "odds_05": 1.4, "odds_10": 1.4}, {"id": "sum_lt_19", "name": "Suma < 19", "prob": 0.27938529, "odds_02": 3.5, "odds_03": 3.4, "odds_05": 3.4, "odds_10": 3.2}, {"id": "sum_gt_20", "name": "Suma > 20", "prob": 0.5464249, "odds_02": 1.7, "odds_03": 1.7, "odds_05": 1.7, "odds_10": 1.6}, {"id": "sum_lt_20", "name": "Suma < 20", "prob": 0.36310442, "odds_02": 2.6, "odds_03": 2.6, "odds_05": 2.6, "odds_10": 2.4}, {"id": "sum_gt_21", "name": "Suma > 21", "prob": 0.4535751, "odds_02": 2.1, "odds_03": 2.1, "odds_05": 2.0, "odds_10": 1.9}, {"id": "sum_lt_21", "name": "Suma < 21", "prob": 0.4535751, "odds_02": 2.1, "odds_03": 2.1, "odds_05": 2.0, "odds_10": 1.9}, {"id": "sum_gt_22", "name": "Suma > 22", "prob": 0.36310442, "odds_02": 2.6, "odds_03": 2.6, "odds_05": 2.6, "odds_10": 2.4}, {"id": "sum_lt_22", "name": "Suma < 22", "prob": 0.5464249, "odds_02": 1.7, "odds_03": 1.7, "odds_05": 1.7, "odds_10": 1.6}, {"id": "sum_gt_23", "name": "Suma > 23", "prob": 0.27938529, "odds_02": 3.5, "odds_03": 3.4, "odds_05": 3.4, "odds_10": 3.2}, {"id": "sum_lt_23", "name": "Suma < 23", "prob": 0.63689558, "odds_02": 1.5, "odds_03": 1.5, "odds_05": 1.4, "odds_10": 1.4}, {"id": "sum_between_6_13", "name": "Suma entre 6 y 13", "prob": 0.03587963, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}, {"id": "sum_between_18_24", "name": "Suma entre 18 y 24", "prob": 0.5883059, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.6, "odds_10": 1.5}, {"id": "sum_between_29_36", "name": "Suma entre 29 y 36", "prob": 0.03587963, "odds_02": 27.0, "odds_03": 27.0, "odds_05": 26.0, "odds_10": 25.0}], "Repeticiones": [{"id": "at_least_pair", "name": "Al menos una pareja", "prob": 0.9845679, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "exactly_one_pair", "name": "Exactamente una pareja", "prob": 0.23148148, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "two_pairs", "name": "Dos parejas", "prob": 0.34722222, "odds_02": 2.8, "odds_03": 2.7, "odds_05": 2.7, "odds_10": 2.5}, {"id": "three_pairs", "name": "Tres parejas", "prob": 0.03858025, "odds_02": 25.0, "odds_03": 25.0, "odds_05": 24.0, "odds_10": 23.0}, {"id": "three_of_kind", "name": "Trío", "prob": 0.16075103, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "full_house", "name": "Full House", "prob": 0.15432099, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 5.0}, {"id": "four_of_kind", "name": "Poker (4 iguales)", "prob": 0.03858025, "odds_02": 25.0, "odds_03": 25.0, "odds_05": 24.0, "odds_10": 23.0}, {"id": "five_of_kind", "name": "Repóker (5 iguales)", "prob": 0.00385802, "odds_02": 254.0, "odds_03": 251.0, "odds_05": 246.0, "odds_10": 233.0}], "Jackpot": [{"id": "six_of_kind", "name": "6 iguales", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "all_same", "name": "Todos iguales", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "all_different", "name": "Todos distintos", "prob": 0.0154321, "odds_02": 63.0, "odds_03": 62.0, "odds_05": 61.0, "odds_10": 58.0}], "Escaleras": [{"id": "short_straight", "name": "Escalera corta (4)", "prob": 0.27006173, "odds_02": 3.6, "odds_03": 3.5, "odds_05": 3.5, "odds_10": 3.3}, {"id": "long_straight", "name": "Escalera larga (5)", "prob": 0.09259259, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "full_straight", "name": "Escalera completa (6)", "prob": 0.0154321, "odds_02": 63.0, "odds_03": 62.0, "odds_05": 61.0, "odds_10": 58.0}], "Secuencias": [{"id": "seq_123", "name": "Contiene 1-2-3", "prob": 0.24305556, "odds_02": 4.0, "odds_03": 3.9, "odds_05": 3.9, "odds_10": 3.7}, {"id": "seq_234", "name": "Contiene 2-3-4", "prob": 0.24305556, "odds_02": 4.0, "odds_03": 3.9, "odds_05": 3.9, "odds_10": 3.7}, {"id": "seq_345", "name": "Contiene 3-4-5", "prob": 0.24305556, "odds_02": 4.0, "odds_03": 3.9, "odds_05": 3.9, "odds_10": 3.7}, {"id": "seq_456", "name": "Contiene 4-5-6", "prob": 0.24305556, "odds_02": 4.0, "odds_03": 3.9, "odds_05": 3.9, "odds_10": 3.7}], "Alto/Bajo": [{"id": "majority_high", "name": "Mayoría altos (4,5,6)", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "majority_low", "name": "Mayoría bajos (1,2,3)", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "all_high", "name": "Todos altos (4,5,6)", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "all_low", "name": "Todos bajos (1,2,3)", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}], "Comparaciones": [{"id": "more_even", "name": "Más pares que impares", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "more_odd", "name": "Más impares que pares", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "more_high", "name": "Más altos que bajos", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "more_low", "name": "Más bajos que altos", "prob": 0.34375, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}], "Rachas": [{"id": "run_any", "name": "Existe secuencia consecutiva", "prob": 0.94028635, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_2", "name": "Secuencia de longitud 2", "prob": 0.94028635, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_3", "name": "Secuencia de longitud 3", "prob": 0.5941358, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.5, "odds_10": 1.5}, {"id": "run_length_4", "name": "Secuencia de longitud 4", "prob": 0.27006173, "odds_02": 3.6, "odds_03": 3.5, "odds_05": 3.5, "odds_10": 3.3}, {"id": "run_length_5", "name": "Secuencia de longitud 5", "prob": 0.09259259, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}], "Raras": [{"id": "all_even", "name": "Todos pares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "all_odd", "name": "Todos impares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "no_ones", "name": "Ningún 1", "prob": 0.33489798, "odds_02": 2.9, "odds_03": 2.8, "odds_05": 2.8, "odds_10": 2.6}, {"id": "no_sixes", "name": "Ningún 6", "prob": 0.33489798, "odds_02": 2.9, "odds_03": 2.8, "odds_05": 2.8, "odds_10": 2.6}, {"id": "exactly_0_even", "name": "Exactamente 0 dados pares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "exactly_0_odd", "name": "Exactamente 0 dados impares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "exactly_1_even", "name": "Exactamente 1 dados pares", "prob": 0.09375, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "exactly_1_odd", "name": "Exactamente 1 dados impares", "prob": 0.09375, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "exactly_2_even", "name": "Exactamente 2 dados pares", "prob": 0.234375, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_2_odd", "name": "Exactamente 2 dados impares", "prob": 0.234375, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_even", "name": "Exactamente 3 dados pares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_3_odd", "name": "Exactamente 3 dados impares", "prob": 0.3125, "odds_02": 3.1, "odds_03": 3.1, "odds_05": 3.0, "odds_10": 2.8}, {"id": "exactly_4_even", "name": "Exactamente 4 dados pares", "prob": 0.234375, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_4_odd", "name": "Exactamente 4 dados impares", "prob": 0.234375, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_5_even", "name": "Exactamente 5 dados pares", "prob": 0.09375, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "exactly_5_odd", "name": "Exactamente 5 dados impares", "prob": 0.09375, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 10.0, "odds_10": 9.0}, {"id": "exactly_6_even", "name": "Exactamente 6 dados pares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "exactly_6_odd", "name": "Exactamente 6 dados impares", "prob": 0.015625, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}], "Rango": [{"id": "rng_exact_1", "name": "Rango = 1 (todos casi iguales)", "prob": 0.00664438, "odds_02": 147.0, "odds_03": 145.0, "odds_05": 142.0, "odds_10": 135.0}, {"id": "rng_exact_5", "name": "Rango = 5 (máxima dispersión)", "prob": 0.41799554, "odds_02": 2.3, "odds_03": 2.3, "odds_05": 2.2, "odds_10": 2.1}, {"id": "max_gte_1", "name": "Máximo >= 1", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_1", "name": "Mínimo <= 1", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "max_gte_2", "name": "Máximo >= 2", "prob": 0.99997857, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_2", "name": "Mínimo <= 2", "prob": 0.9122085, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_3", "name": "Máximo >= 3", "prob": 0.99862826, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_3", "name": "Mínimo <= 3", "prob": 0.984375, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_4", "name": "Máximo >= 4", "prob": 0.984375, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_4", "name": "Mínimo <= 4", "prob": 0.99862826, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_5", "name": "Máximo >= 5", "prob": 0.9122085, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_5", "name": "Mínimo <= 5", "prob": 0.99997857, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_6", "name": "Máximo >= 6", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "min_lte_6", "name": "Mínimo <= 6", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "range_0", "name": "Rango exacto = 0", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "range_1", "name": "Rango exacto = 1", "prob": 0.00664438, "odds_02": 147.0, "odds_03": 145.0, "odds_05": 142.0, "odds_10": 135.0}, {"id": "range_2", "name": "Rango exacto = 2", "prob": 0.0516118, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 18.0, "odds_10": 17.0}, {"id": "range_3", "name": "Rango exacto = 3", "prob": 0.17373971, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "range_4", "name": "Rango exacto = 4", "prob": 0.34987997, "odds_02": 2.8, "odds_03": 2.7, "odds_05": 2.7, "odds_10": 2.5}, {"id": "range_5", "name": "Rango exacto = 5", "prob": 0.41799554, "odds_02": 2.3, "odds_03": 2.3, "odds_05": 2.2, "odds_10": 2.1}], "Avanzadas": [{"id": "sum_prime", "name": "Suma es primo", "prob": 0.27199074, "odds_02": 3.6, "odds_03": 3.5, "odds_05": 3.4, "odds_10": 3.3}, {"id": "sum_square", "name": "Suma es cuadrado perfecto", "prob": 0.11059671, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 8.0, "odds_10": 8.0}, {"id": "sum_power2", "name": "Suma es potencia de 2", "prob": 0.05131173, "odds_02": 19.0, "odds_03": 18.0, "odds_05": 18.0, "odds_10": 17.0}, {"id": "more_distinct", "name": "Más distintos que repetidos", "prob": 0.24691358, "odds_02": 3.9, "odds_03": 3.9, "odds_05": 3.8, "odds_10": 3.6}], "Múltiplos": [{"id": "sum_mult_2", "name": "Suma múltiplo de 2", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_mult_3", "name": "Suma múltiplo de 3", "prob": 0.33333333, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "sum_mult_4", "name": "Suma múltiplo de 4", "prob": 0.25, "odds_02": 3.9, "odds_03": 3.8, "odds_05": 3.8, "odds_10": 3.6}, {"id": "sum_mult_5", "name": "Suma múltiplo de 5", "prob": 0.19999571, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "sum_mult_6", "name": "Suma múltiplo de 6", "prob": 0.16666667, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "sum_mult_7", "name": "Suma múltiplo de 7", "prob": 0.14287551, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 6.0}, {"id": "sum_mult_8", "name": "Suma múltiplo de 8", "prob": 0.12484997, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 7.0}, {"id": "sum_mult_9", "name": "Suma múltiplo de 9", "prob": 0.11046811, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 8.0, "odds_10": 8.0}, {"id": "sum_mult_10", "name": "Suma múltiplo de 10", "prob": 0.10294496, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 8.0}], "Valores": [{"id": "at_least_one_1", "name": "Sale al menos un 1", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_one_2", "name": "Sale al menos un 2", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_one_3", "name": "Sale al menos un 3", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_one_4", "name": "Sale al menos un 4", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_one_5", "name": "Sale al menos un 5", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_one_6", "name": "Sale al menos un 6", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "exactly_1_of_1", "name": "Exactamente 1 dados con 1", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_1", "name": "Exactamente 2 dados con 1", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_1", "name": "Exactamente 3 dados con 1", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_1", "name": "Exactamente 4 dados con 1", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_1", "name": "Al menos 1 dados con 1", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_1", "name": "Al menos 2 dados con 1", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_1", "name": "Al menos 3 dados con 1", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_1", "name": "Al menos 4 dados con 1", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}, {"id": "exactly_1_of_2", "name": "Exactamente 1 dados con 2", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_2", "name": "Exactamente 2 dados con 2", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_2", "name": "Exactamente 3 dados con 2", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_2", "name": "Exactamente 4 dados con 2", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_2", "name": "Al menos 1 dados con 2", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_2", "name": "Al menos 2 dados con 2", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_2", "name": "Al menos 3 dados con 2", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_2", "name": "Al menos 4 dados con 2", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}, {"id": "exactly_1_of_3", "name": "Exactamente 1 dados con 3", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_3", "name": "Exactamente 2 dados con 3", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_3", "name": "Exactamente 3 dados con 3", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_3", "name": "Exactamente 4 dados con 3", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_3", "name": "Al menos 1 dados con 3", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_3", "name": "Al menos 2 dados con 3", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_3", "name": "Al menos 3 dados con 3", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_3", "name": "Al menos 4 dados con 3", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}, {"id": "exactly_1_of_4", "name": "Exactamente 1 dados con 4", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_4", "name": "Exactamente 2 dados con 4", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_4", "name": "Exactamente 3 dados con 4", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_4", "name": "Exactamente 4 dados con 4", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_4", "name": "Al menos 1 dados con 4", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_4", "name": "Al menos 2 dados con 4", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_4", "name": "Al menos 3 dados con 4", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_4", "name": "Al menos 4 dados con 4", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}, {"id": "exactly_1_of_5", "name": "Exactamente 1 dados con 5", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_5", "name": "Exactamente 2 dados con 5", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_5", "name": "Exactamente 3 dados con 5", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_5", "name": "Exactamente 4 dados con 5", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_5", "name": "Al menos 1 dados con 5", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_5", "name": "Al menos 2 dados con 5", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_5", "name": "Al menos 3 dados con 5", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_5", "name": "Al menos 4 dados con 5", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}, {"id": "exactly_1_of_6", "name": "Exactamente 1 dados con 6", "prob": 0.40187757, "odds_02": 2.4, "odds_03": 2.4, "odds_05": 2.3, "odds_10": 2.2}, {"id": "exactly_2_of_6", "name": "Exactamente 2 dados con 6", "prob": 0.20093879, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "exactly_3_of_6", "name": "Exactamente 3 dados con 6", "prob": 0.05358368, "odds_02": 18.0, "odds_03": 18.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_4_of_6", "name": "Exactamente 4 dados con 6", "prob": 0.00803755, "odds_02": 121.0, "odds_03": 120.0, "odds_05": 118.0, "odds_10": 111.0}, {"id": "at_least_1_of_6", "name": "Al menos 1 dados con 6", "prob": 0.66510202, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "at_least_2_of_6", "name": "Al menos 2 dados con 6", "prob": 0.26322445, "odds_02": 3.7, "odds_03": 3.6, "odds_05": 3.6, "odds_10": 3.4}, {"id": "at_least_3_of_6", "name": "Al menos 3 dados con 6", "prob": 0.06228567, "odds_02": 15.0, "odds_03": 15.0, "odds_05": 15.0, "odds_10": 14.0}, {"id": "at_least_4_of_6", "name": "Al menos 4 dados con 6", "prob": 0.00870199, "odds_02": 112.0, "odds_03": 111.0, "odds_05": 109.0, "odds_10": 103.0}], "Patrones": [{"id": "exactly_1_distinct", "name": "Exactamente 1 valores distintos", "prob": 0.0001286, "odds_02": 7620.0, "odds_03": 7542.0, "odds_05": 7387.0, "odds_10": 6998.0}, {"id": "exactly_2_distinct", "name": "Exactamente 2 valores distintos", "prob": 0.01993313, "odds_02": 49.0, "odds_03": 48.0, "odds_05": 47.0, "odds_10": 45.0}, {"id": "exactly_3_distinct", "name": "Exactamente 3 valores distintos", "prob": 0.23148148, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_4_distinct", "name": "Exactamente 4 valores distintos", "prob": 0.50154321, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.8, "odds_10": 1.7}, {"id": "exactly_5_distinct", "name": "Exactamente 5 valores distintos", "prob": 0.23148148, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_6_distinct", "name": "Exactamente 6 valores distintos", "prob": 0.0154321, "odds_02": 63.0, "odds_03": 62.0, "odds_05": 61.0, "odds_10": 58.0}]}, "7": {"Suma": [{"id": "sum_even", "name": "Suma par", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_odd", "name": "Suma impar", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_exact_7", "name": "Suma exacta 7", "prob": 3.57e-06, "odds_02": 274337.0, "odds_03": 271537.0, "odds_05": 265939.0, "odds_10": 251942.0}, {"id": "sum_exact_8", "name": "Suma exacta 8", "prob": 2.501e-05, "odds_02": 39191.0, "odds_03": 38791.0, "odds_05": 37991.0, "odds_10": 35991.0}, {"id": "sum_exact_9", "name": "Suma exacta 9", "prob": 0.00010002, "odds_02": 9797.0, "odds_03": 9697.0, "odds_05": 9497.0, "odds_10": 8997.0}, {"id": "sum_exact_10", "name": "Suma exacta 10", "prob": 0.00030007, "odds_02": 3265.0, "odds_03": 3232.0, "odds_05": 3165.0, "odds_10": 2999.0}, {"id": "sum_exact_11", "name": "Suma exacta 11", "prob": 0.00075017, "odds_02": 1306.0, "odds_03": 1293.0, "odds_05": 1266.0, "odds_10": 1199.0}, {"id": "sum_exact_12", "name": "Suma exacta 12", "prob": 0.00165038, "odds_02": 593.0, "odds_03": 587.0, "odds_05": 575.0, "odds_10": 545.0}, {"id": "sum_exact_13", "name": "Suma exacta 13", "prob": 0.00327575, "odds_02": 299.0, "odds_03": 296.0, "odds_05": 290.0, "odds_10": 274.0}, {"id": "sum_exact_14", "name": "Suma exacta 14", "prob": 0.00595493, "odds_02": 164.0, "odds_03": 162.0, "odds_05": 159.0, "odds_10": 151.0}, {"id": "sum_exact_15", "name": "Suma exacta 15", "prob": 0.01002729, "odds_02": 97.0, "odds_03": 96.0, "odds_05": 94.0, "odds_10": 89.0}, {"id": "sum_exact_16", "name": "Suma exacta 16", "prob": 0.01577861, "odds_02": 62.0, "odds_03": 61.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "sum_exact_17", "name": "Suma exacta 17", "prob": 0.02335534, "odds_02": 41.0, "odds_03": 41.0, "odds_05": 40.0, "odds_10": 38.0}, {"id": "sum_exact_18", "name": "Suma exacta 18", "prob": 0.03265746, "odds_02": 30.0, "odds_03": 29.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "sum_exact_19", "name": "Suma exacta 19", "prob": 0.04328489, "odds_02": 22.0, "odds_03": 22.0, "odds_05": 21.0, "odds_10": 20.0}, {"id": "sum_exact_20", "name": "Suma exacta 20", "prob": 0.05453747, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "sum_exact_21", "name": "Suma exacta 21", "prob": 0.06546854, "odds_02": 14.0, "odds_03": 14.0, "odds_05": 14.0, "odds_10": 13.0}, {"id": "sum_exact_22", "name": "Suma exacta 22", "prob": 0.07499214, "odds_02": 13.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 12.0}, {"id": "sum_exact_23", "name": "Suma exacta 23", "prob": 0.08204375, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_24", "name": "Suma exacta 24", "prob": 0.08579461, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_25", "name": "Suma exacta 25", "prob": 0.08579461, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_26", "name": "Suma exacta 26", "prob": 0.08204375, "odds_02": 11.0, "odds_03": 11.0, "odds_05": 11.0, "odds_10": 10.0}, {"id": "sum_exact_27", "name": "Suma exacta 27", "prob": 0.07499214, "odds_02": 13.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 12.0}, {"id": "sum_exact_28", "name": "Suma exacta 28", "prob": 0.06546854, "odds_02": 14.0, "odds_03": 14.0, "odds_05": 14.0, "odds_10": 13.0}, {"id": "sum_exact_29", "name": "Suma exacta 29", "prob": 0.05453747, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "sum_exact_30", "name": "Suma exacta 30", "prob": 0.04328489, "odds_02": 22.0, "odds_03": 22.0, "odds_05": 21.0, "odds_10": 20.0}, {"id": "sum_exact_31", "name": "Suma exacta 31", "prob": 0.03265746, "odds_02": 30.0, "odds_03": 29.0, "odds_05": 29.0, "odds_10": 27.0}, {"id": "sum_exact_32", "name": "Suma exacta 32", "prob": 0.02335534, "odds_02": 41.0, "odds_03": 41.0, "odds_05": 40.0, "odds_10": 38.0}, {"id": "sum_exact_33", "name": "Suma exacta 33", "prob": 0.01577861, "odds_02": 62.0, "odds_03": 61.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "sum_exact_34", "name": "Suma exacta 34", "prob": 0.01002729, "odds_02": 97.0, "odds_03": 96.0, "odds_05": 94.0, "odds_10": 89.0}, {"id": "sum_exact_35", "name": "Suma exacta 35", "prob": 0.00595493, "odds_02": 164.0, "odds_03": 162.0, "odds_05": 159.0, "odds_10": 151.0}, {"id": "sum_exact_36", "name": "Suma exacta 36", "prob": 0.00327575, "odds_02": 299.0, "odds_03": 296.0, "odds_05": 290.0, "odds_10": 274.0}, {"id": "sum_exact_37", "name": "Suma exacta 37", "prob": 0.00165038, "odds_02": 593.0, "odds_03": 587.0, "odds_05": 575.0, "odds_10": 545.0}, {"id": "sum_exact_38", "name": "Suma exacta 38", "prob": 0.00075017, "odds_02": 1306.0, "odds_03": 1293.0, "odds_05": 1266.0, "odds_10": 1199.0}, {"id": "sum_exact_39", "name": "Suma exacta 39", "prob": 0.00030007, "odds_02": 3265.0, "odds_03": 3232.0, "odds_05": 3165.0, "odds_10": 2999.0}, {"id": "sum_exact_40", "name": "Suma exacta 40", "prob": 0.00010002, "odds_02": 9797.0, "odds_03": 9697.0, "odds_05": 9497.0, "odds_10": 8997.0}, {"id": "sum_exact_41", "name": "Suma exacta 41", "prob": 2.501e-05, "odds_02": 39191.0, "odds_03": 38791.0, "odds_05": 37991.0, "odds_10": 35991.0}, {"id": "sum_exact_42", "name": "Suma exacta 42", "prob": 3.57e-06, "odds_02": 274337.0, "odds_03": 271537.0, "odds_05": 265939.0, "odds_10": 251942.0}, {"id": "sum_gt_22", "name": "Suma > 22", "prob": 0.66783836, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "sum_lt_22", "name": "Suma < 22", "prob": 0.2571695, "odds_02": 3.8, "odds_03": 3.7, "odds_05": 3.6, "odds_10": 3.4}, {"id": "sum_gt_23", "name": "Suma > 23", "prob": 0.58579461, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.6, "odds_10": 1.5}, {"id": "sum_lt_23", "name": "Suma < 23", "prob": 0.33216164, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "sum_gt_24", "name": "Suma > 24", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_lt_24", "name": "Suma < 24", "prob": 0.41420539, "odds_02": 2.3, "odds_03": 2.3, "odds_05": 2.2, "odds_10": 2.1}, {"id": "sum_gt_25", "name": "Suma > 25", "prob": 0.41420539, "odds_02": 2.3, "odds_03": 2.3, "odds_05": 2.2, "odds_10": 2.1}, {"id": "sum_lt_25", "name": "Suma < 25", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_gt_26", "name": "Suma > 26", "prob": 0.33216164, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "sum_lt_26", "name": "Suma < 26", "prob": 0.58579461, "odds_02": 1.6, "odds_03": 1.6, "odds_05": 1.6, "odds_10": 1.5}, {"id": "sum_between_7_15", "name": "Suma entre 7 y 15", "prob": 0.02208719, "odds_02": 44.0, "odds_03": 43.0, "odds_05": 43.0, "odds_10": 40.0}, {"id": "sum_between_20_28", "name": "Suma entre 20 y 28", "prob": 0.67113555, "odds_02": 1.4, "odds_03": 1.4, "odds_05": 1.4, "odds_10": 1.3}, {"id": "sum_between_34_42", "name": "Suma entre 34 y 42", "prob": 0.02208719, "odds_02": 44.0, "odds_03": 43.0, "odds_05": 43.0, "odds_10": 40.0}], "Repeticiones": [{"id": "at_least_pair", "name": "Al menos una pareja", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "exactly_one_pair", "name": "Exactamente una pareja", "prob": 0.05401235, "odds_02": 18.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "two_pairs", "name": "Dos parejas", "prob": 0.27006173, "odds_02": 3.6, "odds_03": 3.5, "odds_05": 3.5, "odds_10": 3.3}, {"id": "three_pairs", "name": "Tres parejas", "prob": 0.13503086, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 6.0}, {"id": "three_of_kind", "name": "Trío", "prob": 0.12002743, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 7.0, "odds_10": 7.0}, {"id": "full_house", "name": "Full House", "prob": 0.31507202, "odds_02": 3.1, "odds_03": 3.0, "odds_05": 3.0, "odds_10": 2.8}, {"id": "four_of_kind", "name": "Poker (4 iguales)", "prob": 0.04501029, "odds_02": 21.0, "odds_03": 21.0, "odds_05": 21.0, "odds_10": 19.0}, {"id": "five_of_kind", "name": "Repóker (5 iguales)", "prob": 0.01125257, "odds_02": 87.0, "odds_03": 86.0, "odds_05": 84.0, "odds_10": 79.0}], "Jackpot": [{"id": "six_of_kind", "name": "6 iguales", "prob": 0.00075017, "odds_02": 1306.0, "odds_03": 1293.0, "odds_05": 1266.0, "odds_10": 1199.0}, {"id": "seven_of_kind", "name": "7 iguales", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}, {"id": "all_same", "name": "Todos iguales", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}], "Escaleras": [{"id": "short_straight", "name": "Escalera corta (4)", "prob": 0.38408779, "odds_02": 2.5, "odds_03": 2.5, "odds_05": 2.4, "odds_10": 2.3}, {"id": "long_straight", "name": "Escalera larga (5)", "prob": 0.17403978, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "full_straight", "name": "Escalera completa (6)", "prob": 0.05401235, "odds_02": 18.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}], "Secuencias": [{"id": "seq_123", "name": "Contiene 1-2-3", "prob": 0.33052555, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "seq_234", "name": "Contiene 2-3-4", "prob": 0.33052555, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "seq_345", "name": "Contiene 3-4-5", "prob": 0.33052555, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "seq_456", "name": "Contiene 4-5-6", "prob": 0.33052555, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}], "Alto/Bajo": [{"id": "majority_high", "name": "Mayoría altos (4,5,6)", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "majority_low", "name": "Mayoría bajos (1,2,3)", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "all_high", "name": "Todos altos (4,5,6)", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "all_low", "name": "Todos bajos (1,2,3)", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}], "Comparaciones": [{"id": "more_even", "name": "Más pares que impares", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_odd", "name": "Más impares que pares", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_high", "name": "Más altos que bajos", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "more_low", "name": "Más bajos que altos", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}], "Rachas": [{"id": "run_any", "name": "Existe secuencia consecutiva", "prob": 0.96967164, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_2", "name": "Secuencia de longitud 2", "prob": 0.96967164, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "run_length_3", "name": "Secuencia de longitud 3", "prob": 0.70996228, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "run_length_4", "name": "Secuencia de longitud 4", "prob": 0.38408779, "odds_02": 2.5, "odds_03": 2.5, "odds_05": 2.4, "odds_10": 2.3}, {"id": "run_length_5", "name": "Secuencia de longitud 5", "prob": 0.17403978, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}], "Raras": [{"id": "all_even", "name": "Todos pares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "all_odd", "name": "Todos impares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "no_ones", "name": "Ningún 1", "prob": 0.27908165, "odds_02": 3.5, "odds_03": 3.4, "odds_05": 3.4, "odds_10": 3.2}, {"id": "no_sixes", "name": "Ningún 6", "prob": 0.27908165, "odds_02": 3.5, "odds_03": 3.4, "odds_05": 3.4, "odds_10": 3.2}, {"id": "exactly_0_even", "name": "Exactamente 0 dados pares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "exactly_0_odd", "name": "Exactamente 0 dados impares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "exactly_1_even", "name": "Exactamente 1 dados pares", "prob": 0.0546875, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_1_odd", "name": "Exactamente 1 dados impares", "prob": 0.0546875, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_2_even", "name": "Exactamente 2 dados pares", "prob": 0.1640625, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_2_odd", "name": "Exactamente 2 dados impares", "prob": 0.1640625, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_3_even", "name": "Exactamente 3 dados pares", "prob": 0.2734375, "odds_02": 3.5, "odds_03": 3.5, "odds_05": 3.4, "odds_10": 3.2}, {"id": "exactly_3_odd", "name": "Exactamente 3 dados impares", "prob": 0.2734375, "odds_02": 3.5, "odds_03": 3.5, "odds_05": 3.4, "odds_10": 3.2}, {"id": "exactly_4_even", "name": "Exactamente 4 dados pares", "prob": 0.2734375, "odds_02": 3.5, "odds_03": 3.5, "odds_05": 3.4, "odds_10": 3.2}, {"id": "exactly_4_odd", "name": "Exactamente 4 dados impares", "prob": 0.2734375, "odds_02": 3.5, "odds_03": 3.5, "odds_05": 3.4, "odds_10": 3.2}, {"id": "exactly_5_even", "name": "Exactamente 5 dados pares", "prob": 0.1640625, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_5_odd", "name": "Exactamente 5 dados impares", "prob": 0.1640625, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "exactly_6_even", "name": "Exactamente 6 dados pares", "prob": 0.0546875, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_6_odd", "name": "Exactamente 6 dados impares", "prob": 0.0546875, "odds_02": 17.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}, {"id": "exactly_7_even", "name": "Exactamente 7 dados pares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}, {"id": "exactly_7_odd", "name": "Exactamente 7 dados impares", "prob": 0.0078125, "odds_02": 125.0, "odds_03": 124.0, "odds_05": 121.0, "odds_10": 115.0}], "Rango": [{"id": "rng_exact_1", "name": "Rango = 1 (todos casi iguales)", "prob": 0.00225051, "odds_02": 435.0, "odds_03": 431.0, "odds_05": 422.0, "odds_10": 399.0}, {"id": "rng_exact_5", "name": "Rango = 5 (máxima dispersión)", "prob": 0.50036437, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.8, "odds_10": 1.7}, {"id": "max_gte_1", "name": "Máximo >= 1", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_1", "name": "Mínimo <= 1", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "max_gte_2", "name": "Máximo >= 2", "prob": 0.99999643, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_2", "name": "Mínimo <= 2", "prob": 0.94147234, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_3", "name": "Máximo >= 3", "prob": 0.99954275, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_3", "name": "Mínimo <= 3", "prob": 0.9921875, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_4", "name": "Máximo >= 4", "prob": 0.9921875, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_4", "name": "Mínimo <= 4", "prob": 0.99954275, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_5", "name": "Máximo >= 5", "prob": 0.94147234, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "min_lte_5", "name": "Mínimo <= 5", "prob": 0.99999643, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "max_gte_6", "name": "Máximo >= 6", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "min_lte_6", "name": "Mínimo <= 6", "prob": 1.0, "odds_02": 1.1, "odds_03": 1.1, "odds_05": 1.1, "odds_10": 1.1}, {"id": "range_0", "name": "Rango exacto = 0", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}, {"id": "range_1", "name": "Rango exacto = 1", "prob": 0.00225051, "odds_02": 435.0, "odds_03": 431.0, "odds_05": 422.0, "odds_10": 399.0}, {"id": "range_2", "name": "Rango exacto = 2", "prob": 0.02760631, "odds_02": 35.0, "odds_03": 35.0, "odds_05": 34.0, "odds_10": 32.0}, {"id": "range_3", "name": "Rango exacto = 3", "prob": 0.13007973, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 6.0}, {"id": "range_4", "name": "Rango exacto = 4", "prob": 0.33967764, "odds_02": 2.8, "odds_03": 2.8, "odds_05": 2.7, "odds_10": 2.6}, {"id": "range_5", "name": "Rango exacto = 5", "prob": 0.50036437, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.8, "odds_10": 1.7}], "Avanzadas": [{"id": "sum_prime", "name": "Suma es primo", "prob": 0.24158379, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 3.9, "odds_10": 3.7}, {"id": "sum_square", "name": "Suma es cuadrado perfecto", "prob": 0.10494899, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 8.0}, {"id": "sum_power2", "name": "Suma es potencia de 2", "prob": 0.03915895, "odds_02": 25.0, "odds_03": 24.0, "odds_05": 24.0, "odds_10": 22.0}, {"id": "more_distinct", "name": "Más distintos que repetidos", "prob": 0.14403292, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 6.0}], "Múltiplos": [{"id": "sum_mult_2", "name": "Suma múltiplo de 2", "prob": 0.5, "odds_02": 1.9, "odds_03": 1.9, "odds_05": 1.9, "odds_10": 1.8}, {"id": "sum_mult_3", "name": "Suma múltiplo de 3", "prob": 0.33333333, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "sum_mult_4", "name": "Suma múltiplo de 4", "prob": 0.24998571, "odds_02": 3.9, "odds_03": 3.8, "odds_05": 3.8, "odds_10": 3.6}, {"id": "sum_mult_5", "name": "Suma múltiplo de 5", "prob": 0.19999929, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 4.0}, {"id": "sum_mult_6", "name": "Suma múltiplo de 6", "prob": 0.16666667, "odds_02": 5.0, "odds_03": 5.0, "odds_05": 5.0, "odds_10": 5.0}, {"id": "sum_mult_7", "name": "Suma múltiplo de 7", "prob": 0.14285408, "odds_02": 6.0, "odds_03": 6.0, "odds_05": 6.0, "odds_10": 6.0}, {"id": "sum_mult_8", "name": "Suma múltiplo de 8", "prob": 0.12505358, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 7.0}, {"id": "sum_mult_9", "name": "Suma múltiplo de 9", "prob": 0.11102538, "odds_02": 8.0, "odds_03": 8.0, "odds_05": 8.0, "odds_10": 8.0}, {"id": "sum_mult_10", "name": "Suma múltiplo de 10", "prob": 0.09822245, "odds_02": 9.0, "odds_03": 9.0, "odds_05": 9.0, "odds_10": 9.0}], "Valores": [{"id": "at_least_one_1", "name": "Sale al menos un 1", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_one_2", "name": "Sale al menos un 2", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_one_3", "name": "Sale al menos un 3", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_one_4", "name": "Sale al menos un 4", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_one_5", "name": "Sale al menos un 5", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_one_6", "name": "Sale al menos un 6", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "exactly_1_of_1", "name": "Exactamente 1 dados con 1", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_1", "name": "Exactamente 2 dados con 1", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_1", "name": "Exactamente 3 dados con 1", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_1", "name": "Exactamente 4 dados con 1", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_1", "name": "Al menos 1 dados con 1", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_1", "name": "Al menos 2 dados con 1", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_1", "name": "Al menos 3 dados con 1", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_1", "name": "Al menos 4 dados con 1", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}, {"id": "exactly_1_of_2", "name": "Exactamente 1 dados con 2", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_2", "name": "Exactamente 2 dados con 2", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_2", "name": "Exactamente 3 dados con 2", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_2", "name": "Exactamente 4 dados con 2", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_2", "name": "Al menos 1 dados con 2", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_2", "name": "Al menos 2 dados con 2", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_2", "name": "Al menos 3 dados con 2", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_2", "name": "Al menos 4 dados con 2", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}, {"id": "exactly_1_of_3", "name": "Exactamente 1 dados con 3", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_3", "name": "Exactamente 2 dados con 3", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_3", "name": "Exactamente 3 dados con 3", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_3", "name": "Exactamente 4 dados con 3", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_3", "name": "Al menos 1 dados con 3", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_3", "name": "Al menos 2 dados con 3", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_3", "name": "Al menos 3 dados con 3", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_3", "name": "Al menos 4 dados con 3", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}, {"id": "exactly_1_of_4", "name": "Exactamente 1 dados con 4", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_4", "name": "Exactamente 2 dados con 4", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_4", "name": "Exactamente 3 dados con 4", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_4", "name": "Exactamente 4 dados con 4", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_4", "name": "Al menos 1 dados con 4", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_4", "name": "Al menos 2 dados con 4", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_4", "name": "Al menos 3 dados con 4", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_4", "name": "Al menos 4 dados con 4", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}, {"id": "exactly_1_of_5", "name": "Exactamente 1 dados con 5", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_5", "name": "Exactamente 2 dados con 5", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_5", "name": "Exactamente 3 dados con 5", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_5", "name": "Exactamente 4 dados con 5", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_5", "name": "Al menos 1 dados con 5", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_5", "name": "Al menos 2 dados con 5", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_5", "name": "Al menos 3 dados con 5", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_5", "name": "Al menos 4 dados con 5", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}, {"id": "exactly_1_of_6", "name": "Exactamente 1 dados con 6", "prob": 0.39071431, "odds_02": 2.5, "odds_03": 2.4, "odds_05": 2.4, "odds_10": 2.3}, {"id": "exactly_2_of_6", "name": "Exactamente 2 dados con 6", "prob": 0.23442858, "odds_02": 4.0, "odds_03": 4.0, "odds_05": 4.0, "odds_10": 3.8}, {"id": "exactly_3_of_6", "name": "Exactamente 3 dados con 6", "prob": 0.07814286, "odds_02": 12.0, "odds_03": 12.0, "odds_05": 12.0, "odds_10": 11.0}, {"id": "exactly_4_of_6", "name": "Exactamente 4 dados con 6", "prob": 0.01562857, "odds_02": 62.0, "odds_03": 62.0, "odds_05": 60.0, "odds_10": 57.0}, {"id": "at_least_1_of_6", "name": "Al menos 1 dados con 6", "prob": 0.72091835, "odds_02": 1.3, "odds_03": 1.3, "odds_05": 1.3, "odds_10": 1.2}, {"id": "at_least_2_of_6", "name": "Al menos 2 dados con 6", "prob": 0.33020405, "odds_02": 2.9, "odds_03": 2.9, "odds_05": 2.8, "odds_10": 2.7}, {"id": "at_least_3_of_6", "name": "Al menos 3 dados con 6", "prob": 0.09577546, "odds_02": 10.0, "odds_03": 10.0, "odds_05": 9.0, "odds_10": 9.0}, {"id": "at_least_4_of_6", "name": "Al menos 4 dados con 6", "prob": 0.0176326, "odds_02": 55.0, "odds_03": 55.0, "odds_05": 53.0, "odds_10": 51.0}], "Patrones": [{"id": "exactly_1_distinct", "name": "Exactamente 1 valores distintos", "prob": 2.143e-05, "odds_02": 45722.0, "odds_03": 45256.0, "odds_05": 44323.0, "odds_10": 41990.0}, {"id": "exactly_2_distinct", "name": "Exactamente 2 valores distintos", "prob": 0.00675154, "odds_02": 145.0, "odds_03": 143.0, "odds_05": 140.0, "odds_10": 133.0}, {"id": "exactly_3_distinct", "name": "Exactamente 3 valores distintos", "prob": 0.12902949, "odds_02": 7.0, "odds_03": 7.0, "odds_05": 7.0, "odds_10": 6.0}, {"id": "exactly_4_distinct", "name": "Exactamente 4 valores distintos", "prob": 0.45010288, "odds_02": 2.1, "odds_03": 2.1, "odds_05": 2.1, "odds_10": 1.9}, {"id": "exactly_5_distinct", "name": "Exactamente 5 valores distintos", "prob": 0.3600823, "odds_02": 2.7, "odds_03": 2.6, "odds_05": 2.6, "odds_10": 2.4}, {"id": "exactly_6_distinct", "name": "Exactamente 6 valores distintos", "prob": 0.05401235, "odds_02": 18.0, "odds_03": 17.0, "odds_05": 17.0, "odds_10": 16.0}]}};
+const API = 'https://undergo-backed-joyous.ngrok-free.dev';
+let token = localStorage.getItem('casino_token') || '';
+let me = JSON.parse(localStorage.getItem('casino_me') || 'null');
+let betsData = {};
+let currentCat = null;
+let queue = [];
+let pollInterval = null;
+let authMode = 'login';
 
-const FACES = ["","⚀","⚁","⚂","⚃","⚄","⚅"];
+// ---------------------------------------------------------------------------
+// AUTH
+// ---------------------------------------------------------------------------
+function showTab(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',(mode==='login'&&i===0)||(mode==='register'&&i===1)));
+  document.getElementById('auth-pass2').style.display = mode==='register'?'block':'none';
+  document.querySelector('.auth-btn').textContent = mode==='login'?'Entrar':'Registrarme';
+}
 
-let S = {
-  balance: 1000, wagered: 0, won: 0, lost: 0, rolls: 0,
-  queue: [], history: [],
-  nDice: '5', edge: '05', cat: null
-};
+async function doAuth() {
+  const user = document.getElementById('auth-user').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const pass2 = document.getElementById('auth-pass2').value;
+  const errEl = document.getElementById('auth-err');
+  errEl.textContent = '';
+  if (!user || !pass) { errEl.textContent = 'Rellena todos los campos'; return; }
 
-function getEdgeKey(){ return 'odds_'+S.edge; }
-function getBets(){ return BETS_DATA[S.nDice] || {}; }
-function getCats(){ return Object.keys(getBets()); }
+  try {
+    let res, data;
+    if (authMode === 'login') {
+      const fd = new FormData();
+      fd.append('username', user); fd.append('password', pass);
+      res = await fetch(`${API}/auth/login`, {method:'POST', body: fd});
+      data = await res.json();
+      if (!res.ok) { errEl.textContent = data.detail || 'Error'; return; }
+      token = data.access_token;
+    } else {
+      if (pass !== pass2) { errEl.textContent = 'Las contraseñas no coinciden'; return; }
+      res = await fetch(`${API}/auth/register`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:user,password:pass})});
+      data = await res.json();
+      if (!res.ok) { errEl.textContent = data.detail || 'Error'; return; }
+      token = data.token;
+    }
+    localStorage.setItem('casino_token', token);
+    me = { username: authMode==='login'?data.username:data.username, balance: data.balance, is_admin: data.is_admin };
+    localStorage.setItem('casino_me', JSON.stringify(me));
+    enterApp();
+  } catch(e) {
+    errEl.textContent = 'No se puede conectar al servidor. ¿Está arrancado?';
+  }
+}
 
-function renderCats(){
-  const cats = getCats();
+document.getElementById('auth-pass').addEventListener('keydown', e => { if(e.key==='Enter') doAuth(); });
+document.getElementById('auth-pass2').addEventListener('keydown', e => { if(e.key==='Enter') doAuth(); });
+document.getElementById('auth-user').addEventListener('keydown', e => { if(e.key==='Enter') doAuth(); });
+
+// ---------------------------------------------------------------------------
+// APP INIT
+// ---------------------------------------------------------------------------
+function enterApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  if (me?.is_admin) document.getElementById('nav-admin').style.display = '';
+  refreshMe();
+  loadBets();
+  loadJackpot();
+  startPolling();
+}
+
+function logout() {
+  token = ''; me = null;
+  localStorage.removeItem('casino_token');
+  localStorage.removeItem('casino_me');
+  clearInterval(pollInterval);
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+// Auto-login if token exists
+if (token && me) { enterApp(); }
+
+// ---------------------------------------------------------------------------
+// API HELPERS
+// ---------------------------------------------------------------------------
+async function api(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.detail || 'Error');
+  return data;
+}
+
+// ---------------------------------------------------------------------------
+// VIEWS
+// ---------------------------------------------------------------------------
+function showView(name) {
+  ['game','leaderboard','recent','tournament','chat','admin'].forEach(v => {
+    const el = document.getElementById(`view-${v}`);
+    const nb = document.getElementById(`nav-${v}`);
+    if (!el) return;
+    const isGame = v === 'game';
+    el.style.display = name===v ? (isGame ? 'contents' : 'flex') : 'none';
+    if (nb) nb.classList.toggle('active', name===v);
+  });
+  if (name==='leaderboard') loadLeaderboard();
+  if (name==='recent') loadRecent();
+  if (name==='tournament') loadTournament();
+  if (name==='chat') loadChat();
+  if (name==='admin') loadAdmin();
+}
+
+// ---------------------------------------------------------------------------
+// STATS
+// ---------------------------------------------------------------------------
+async function refreshMe() {
+  try {
+    const data = await api('/me');
+    me = {...me, ...data};
+    localStorage.setItem('casino_me', JSON.stringify(me));
+    updateHeader();
+  } catch(e) {}
+}
+
+function updateHeader() {
+  if (!me) return;
+  const fmt = v => '€'+Math.round(v).toLocaleString('es-ES');
+  document.getElementById('h-bal').textContent = fmt(me.balance);
+  document.getElementById('h-rolls').textContent = me.n_rolls || 0;
+  document.getElementById('h-won').textContent = fmt(me.total_won || 0);
+  const roi = me.roi || 0;
+  const roiEl = document.getElementById('h-roi');
+  roiEl.textContent = (roi>=0?'+':'')+roi.toFixed(1)+'%';
+  roiEl.className = 'v '+(roi>=0?'g':'r');
+}
+
+// ---------------------------------------------------------------------------
+// BETS
+// ---------------------------------------------------------------------------
+async function loadBets() {
+  const n = document.getElementById('sel-dice').value;
+  const edge = document.getElementById('sel-edge').value;
+  try {
+    betsData = await api(`/bets/${n}?edge=${edge}`);
+    currentCat = null;
+    renderCategories();
+    document.getElementById('bets-tbody').innerHTML = '';
+    document.getElementById('cat-title').textContent = 'Selecciona una categoría';
+  } catch(e) { toast('Error cargando apuestas', 'err'); }
+}
+
+function renderCategories() {
+  const cats = Object.keys(betsData);
   document.getElementById('cat-list').innerHTML = cats.map(c => {
-    const n = (getBets()[c]||[]).length;
-    const active = S.cat===c ? 'active' : '';
-    return `<div class="cat-item ${active}" onclick="selectCat('${c}')">${c}<span class="cat-count">${n}</span></div>`;
+    const n = betsData[c].length;
+    const active = currentCat===c ? 'active' : '';
+    return `<div class="cat-item ${active}" onclick="selectCat('${c}')">${c}<span class="cat-n">${n}</span></div>`;
   }).join('');
 }
 
-function selectCat(cat){
-  S.cat = cat;
-  renderCats();
-  document.getElementById('bets-header').textContent = cat;
-  const bets = getBets()[cat] || [];
-  const ekey = getEdgeKey();
+function selectCat(cat) {
+  currentCat = cat;
+  renderCategories();
+  document.getElementById('cat-title').textContent = cat;
+  const bets = betsData[cat] || [];
   document.getElementById('bets-tbody').innerHTML = bets.map(b => {
-    const odds = b[ekey];
-    const oddsStr = odds >= 10 ? Math.round(odds)+'x' : odds+'x';
-    const pct = (b.prob*100).toFixed(b.prob < 0.001 ? 4 : b.prob < 0.01 ? 3 : 2);
-    return `<tr onclick="addBet('${b.id}')">
-      <td>${b.name}</td>
-      <td class="r prob-text">${pct}%</td>
-      <td class="r"><span class="odds-pill">${oddsStr}</span></td>
+    const pct = (b.prob*100).toFixed(b.prob<0.001?4:b.prob<0.01?3:2);
+    const oddsStr = b.odds >= 10 ? Math.round(b.odds)+'x' : b.odds+'x';
+    return `<tr onclick="addBet('${b.id}','${escHtml(b.name)}',${b.odds})">
+      <td>${escHtml(b.name)}</td>
+      <td class="r prob-c">${pct}%</td>
+      <td class="r"><span class="odds-tag">${oddsStr}</span></td>
     </tr>`;
   }).join('');
 }
 
-function findBet(id){
-  for(const [cat, bets] of Object.entries(getBets())){
-    const b = bets.find(x=>x.id===id);
-    if(b) return b;
-  }
-  return null;
-}
-
-function addBet(id){
-  const b = findBet(id);
-  if(!b) return;
-  const amt = parseFloat(document.getElementById('inp-amt').value)||10;
-  if(amt > S.balance){ alert('Saldo insuficiente'); return; }
-  S.queue.push({...b, amount: amt, ekey: getEdgeKey()});
+function addBet(id, name, odds) {
+  const amt = parseFloat(document.getElementById('inp-amt').value) || 10;
+  if (amt > (me?.balance || 0)) { toast('Saldo insuficiente', 'err'); return; }
+  queue.push({id, name, odds, amount: amt});
   renderQueue();
   document.getElementById('roll-btn').disabled = false;
-  document.getElementById('dice-area').style.display = 'none';
-  document.getElementById('results-area').style.display = 'none';
+  document.getElementById('dice-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('jp-win-section').style.display = 'none';
 }
 
-function removeQ(idx){
-  S.queue.splice(idx,1);
+function removeQ(i) {
+  queue.splice(i,1);
   renderQueue();
-  if(!S.queue.length) document.getElementById('roll-btn').disabled = true;
+  if (!queue.length) document.getElementById('roll-btn').disabled = true;
 }
 
-function renderQueue(){
+function renderQueue() {
   const el = document.getElementById('queue-list');
-  if(!S.queue.length){
-    el.innerHTML = '<div class="empty-q">Haz clic en una apuesta para añadirla</div>';
-    return;
-  }
-  el.innerHTML = S.queue.map((b,i) => {
-    const ekey = b.ekey || getEdgeKey();
-    const odds = b[ekey];
-    const oddsStr = odds >= 10 ? Math.round(odds)+'x' : odds+'x';
-    return `<div class="q-item">
-      <span class="q-name">${b.name}</span>
-      <span class="q-odds">${oddsStr}</span>
-      <span class="q-amt">€${b.amount}</span>
-      <button class="q-remove" onclick="removeQ(${i})">×</button>
+  if (!queue.length) { el.innerHTML = '<div class="empty-q">Haz clic en una apuesta ↑</div>'; return; }
+  el.innerHTML = queue.map((b,i) => {
+    const oddsStr = b.odds >= 10 ? Math.round(b.odds)+'x' : b.odds+'x';
+    return `<div class="qi">
+      <span class="qi-name">${escHtml(b.name)}</span>
+      <span class="qi-odds">${oddsStr}</span>
+      <span class="qi-amt">€${b.amount}</span>
+      <button class="qi-rm" onclick="removeQ(${i})">×</button>
     </div>`;
   }).join('');
 }
 
-function roll(){
-  if(!S.queue.length) return;
-  const n = parseInt(S.nDice);
-  const dice = Array.from({length:n}, ()=>Math.ceil(Math.random()*6));
-  const total = dice.reduce((a,b)=>a+b,0);
+function setA(v) { document.getElementById('inp-amt').value = v; }
 
-  // animate dice
-  document.getElementById('dice-area').style.display = 'block';
-  const dr = document.getElementById('dice-row');
-  dr.innerHTML = dice.map(d=>`<div class="die bounce">${FACES[d]}</div>`).join('');
-  document.getElementById('sum-val').textContent = total;
-
-  const results = S.queue.map(b => {
-    const ekey = b.ekey || getEdgeKey();
-    const odds = b[ekey];
-    const won = evalBet(b.id, dice, total, n);
-    const payout = won ? parseFloat((b.amount*(odds-1)).toFixed(2)) : -b.amount;
-    return {...b, won, payout, odds};
-  });
-
-  const net = parseFloat(results.reduce((s,r)=>s+r.payout,0).toFixed(2));
-  const wagered = S.queue.reduce((s,b)=>s+b.amount,0);
-
-  S.balance = parseFloat((S.balance+net).toFixed(2));
-  S.wagered += wagered;
-  results.forEach(r=>{ if(r.payout>0) S.won+=r.payout; else S.lost+=Math.abs(r.payout); });
-  S.rolls++;
-
-  S.history.unshift({dice, total, results, net, balance:S.balance});
-  if(S.history.length>100) S.history.pop();
-
-  // show results
-  document.getElementById('results-area').style.display = 'block';
-  document.getElementById('results-list').innerHTML = results.map(r=>`
-    <div class="r-item">
-      <span class="r-badge ${r.won?'won':'lost'}">${r.won?'✓ GANÓ':'✗ PERDIÓ'}</span>
-      <span class="r-name">${r.name}</span>
-      <span class="r-pay ${r.payout>=0?'pos':'neg'}">${r.payout>=0?'+':''}€${r.payout.toFixed(2)}</span>
-    </div>`).join('');
-  const netEl = document.getElementById('net-val');
-  netEl.textContent = (net>=0?'+':'')+'€'+net.toFixed(2);
-  netEl.className = net>=0 ? 'pos' : 'neg';
-
-  S.queue = [];
-  renderQueue();
+// ---------------------------------------------------------------------------
+// ROLL
+// ---------------------------------------------------------------------------
+async function doRoll() {
+  if (!queue.length) return;
   document.getElementById('roll-btn').disabled = true;
-  updateStats();
-  renderHistory();
+  document.getElementById('roll-btn').textContent = '⏳ Tirando...';
+  try {
+    const data = await api('/roll', 'POST', {
+      n_dice: parseInt(document.getElementById('sel-dice').value),
+      house_edge: parseFloat(document.getElementById('sel-edge').value),
+      bets: queue.map(b => ({id: b.id, amount: b.amount}))
+    });
+    showRollResult(data);
+    me.balance = data.new_balance;
+    await refreshMe();
+    addToLocalHistory(data);
+    loadJackpot();
+  } catch(e) {
+    toast(e.message, 'err');
+    document.getElementById('roll-btn').disabled = false;
+  }
+  document.getElementById('roll-btn').textContent = '🎲 TIRAR DADOS';
+  queue = [];
+  renderQueue();
 }
 
-function evalBet(id, dice, total, n){
-  const vals = new Set(dice);
-  const counts={};
-  dice.forEach(d=>counts[d]=(counts[d]||0)+1);
-  const sig = Object.values(counts).sort((a,b)=>b-a);
+function showRollResult(data) {
+  const faces = ['','⚀','⚁','⚂','⚃','⚄','⚅'];
+  document.getElementById('dice-section').style.display = 'block';
+  const allWon = data.results.every(r=>r.won);
+  document.getElementById('dice-row').innerHTML = data.dice.map(d =>
+    `<div class="die ${allWon?'win':''}">${faces[d]}</div>`
+  ).join('');
+  document.getElementById('sum-val').textContent = data.total;
 
-  if(id==='sum_even') return total%2===0;
-  if(id==='sum_odd') return total%2!==0;
-  if(id.startsWith('sum_exact_')) return total===parseInt(id.split('_')[2]);
-  if(id.startsWith('sum_gt_')) return total>parseInt(id.split('_')[2]);
-  if(id.startsWith('sum_lt_')) return total<parseInt(id.split('_')[2]);
-  if(id.startsWith('sum_between_')){const p=id.split('_');return total>=parseInt(p[2])&&total<=parseInt(p[3]);}
-  if(id.startsWith('sum_mult_')) return total%parseInt(id.split('_')[2])===0;
-  if(id==='sum_prime') return isPrime(total);
-  if(id==='sum_square'){const r=Math.round(Math.sqrt(total));return r*r===total;}
-  if(id==='sum_power2') return total>0&&(total&(total-1))===0;
-  if(id==='more_distinct'){
-    const uniq=Object.values(counts).filter(v=>v===1).length;
-    const rep=Object.values(counts).filter(v=>v>1).reduce((s,v)=>s+v,0);
-    return uniq>rep;
+  if (data.jackpot_won) {
+    document.getElementById('jp-win-section').style.display = 'block';
+    document.getElementById('jp-win-amt').textContent = '€'+data.jackpot_amount.toLocaleString('es-ES');
+    toast('🏆 ¡JACKPOT! €'+Math.round(data.jackpot_amount).toLocaleString('es-ES'), 'jp');
+  } else {
+    document.getElementById('jp-win-section').style.display = 'none';
   }
-  if(id==='at_least_pair') return sig[0]>=2;
-  if(id==='exactly_one_pair') return sig[0]===2&&sig.filter(x=>x===2).length===1;
-  if(id==='two_pairs') return sig.filter(x=>x===2).length===2&&sig[0]===2;
-  if(id==='three_pairs') return sig.filter(x=>x===2).length===3;
-  if(id==='three_of_kind') return sig[0]===3&&!sig.includes(2);
-  if(id==='full_house') return sig.includes(3)&&sig.includes(2);
-  if(id==='four_of_kind') return sig[0]===4&&!sig.includes(3)&&!sig.includes(2);
-  if(id==='five_of_kind') return sig[0]===5;
-  if(id==='six_of_kind') return sig[0]===6;
-  if(id==='seven_of_kind') return sig[0]===7;
-  if(id==='all_same') return vals.size===1;
-  if(id==='short_straight') return [1,2,3].some(i=>[i,i+1,i+2,i+3].every(v=>vals.has(v)));
-  if(id==='long_straight') return [1,2].some(i=>[i,i+1,i+2,i+3,i+4].every(v=>vals.has(v)));
-  if(id==='full_straight') return [1,2,3,4,5,6].every(v=>vals.has(v));
-  if(id==='seq_123') return [1,2,3].every(v=>vals.has(v));
-  if(id==='seq_234') return [2,3,4].every(v=>vals.has(v));
-  if(id==='seq_345') return [3,4,5].every(v=>vals.has(v));
-  if(id==='seq_456') return [4,5,6].every(v=>vals.has(v));
-  if(id==='all_different') return vals.size===n;
-  if(id==='all_high') return dice.every(d=>d>=4);
-  if(id==='all_low') return dice.every(d=>d<=3);
-  if(id==='majority_high'){const h=dice.filter(d=>d>=4).length;return h>n-h;}
-  if(id==='majority_low'){const l=dice.filter(d=>d<=3).length;return l>n-l;}
-  if(id==='more_even'){const e=dice.filter(d=>d%2===0).length;return e>n-e;}
-  if(id==='more_odd'){const o=dice.filter(d=>d%2!==0).length;return o>n-o;}
-  if(id==='more_high'){const h=dice.filter(d=>d>=4).length;return h>n-h;}
-  if(id==='more_low'){const l=dice.filter(d=>d<=3).length;return l>n-l;}
-  if(id==='all_even') return dice.every(d=>d%2===0);
-  if(id==='all_odd') return dice.every(d=>d%2!==0);
-  if(id==='no_ones') return !vals.has(1);
-  if(id==='no_sixes') return !vals.has(6);
-  if(id==='run_any'||id==='run_length_2') return longestRun(vals)>=2;
-  if(id.startsWith('run_length_')) return longestRun(vals)>=parseInt(id.split('_')[2]);
-  if(id.startsWith('at_least_one_')) return vals.has(parseInt(id.split('_')[3]));
-  if(id.startsWith('exactly_')&&id.includes('_of_')&&!id.includes('distinct')&&!id.includes('even')&&!id.includes('odd')){
-    const p=id.split('_');
-    if(p[2]==='of'){const k=parseInt(p[1]),v=parseInt(p[3]);return (counts[v]||0)===k;}
-  }
-  if(id.startsWith('at_least_')&&id.includes('_of_')){
-    const p=id.split('_');
-    if(p[2]==='of'){const k=parseInt(p[1]),v=parseInt(p[3]);return (counts[v]||0)>=k;}
-  }
-  if(id.startsWith('exactly_')&&id.includes('_distinct')){
-    return vals.size===parseInt(id.split('_')[1]);
-  }
-  if(id.startsWith('exactly_')&&id.includes('_even')){
-    const k=parseInt(id.split('_')[1]);
-    return dice.filter(d=>d%2===0).length===k;
-  }
-  if(id.startsWith('exactly_')&&id.includes('_odd')){
-    const k=parseInt(id.split('_')[1]);
-    return dice.filter(d=>d%2!==0).length===k;
-  }
-  if(id.startsWith('max_gte_')) return Math.max(...dice)>=parseInt(id.split('_')[2]);
-  if(id.startsWith('min_lte_')) return Math.min(...dice)<=parseInt(id.split('_')[2]);
-  if(id==='rng_exact_1') return Math.max(...dice)-Math.min(...dice)===1;
-  if(id==='rng_exact_5') return Math.max(...dice)-Math.min(...dice)===5;
-  if(id.startsWith('range_')) return Math.max(...dice)-Math.min(...dice)===parseInt(id.split('_')[1]);
-  return false;
+
+  document.getElementById('results-section').style.display = 'block';
+  document.getElementById('results-list').innerHTML = data.results.map(r => `
+    <div class="ri">
+      <span class="ri-badge ${r.won?'w':'l'}">${r.won?'✓ GANÓ':'✗ PERDIÓ'}</span>
+      <span class="ri-name">${escHtml(r.name)}</span>
+      <span class="ri-pay ${r.payout>=0?'p':'n'}">${r.payout>=0?'+':''}€${r.payout.toFixed(2)}</span>
+    </div>`).join('');
+
+  const netEl = document.getElementById('net-val');
+  netEl.textContent = (data.net>=0?'+':'')+'€'+data.net.toFixed(2);
+  netEl.className = data.net>=0 ? 'p' : 'n';
 }
 
-function longestRun(vals){
-  const sv=Array.from(vals).sort((a,b)=>a-b);
-  if(!sv.length) return 0;
-  let best=1,cur=1;
-  for(let i=1;i<sv.length;i++){if(sv[i]===sv[i-1]+1){cur++;best=Math.max(best,cur);}else cur=1;}
-  return best;
+let localHistory = [];
+function addToLocalHistory(data) {
+  localHistory.unshift(data);
+  if (localHistory.length > 50) localHistory.pop();
+  renderLocalHistory();
 }
 
-function isPrime(n){
-  if(n<2) return false; if(n===2) return true; if(n%2===0) return false;
-  for(let i=3;i<=Math.sqrt(n);i+=2) if(n%i===0) return false;
-  return true;
-}
-
-function fmt(v){ return '€'+v.toLocaleString('es-ES',{minimumFractionDigits:0,maximumFractionDigits:2}); }
-
-function updateStats(){
-  document.getElementById('h-balance').textContent = fmt(S.balance);
-  document.getElementById('h-balance').className = 'val '+(S.balance>=1000?'yellow':S.balance>=100?'yellow':'red');
-  document.getElementById('h-rolls').textContent = S.rolls;
-  document.getElementById('h-won').textContent = fmt(S.won);
-  document.getElementById('h-lost').textContent = fmt(S.lost);
-  const roiEl = document.getElementById('h-roi');
-  if(S.wagered>0){
-    const roi = (S.won-S.lost)/S.wagered*100;
-    roiEl.textContent = (roi>=0?'+':'')+roi.toFixed(1)+'%';
-    roiEl.className = 'val '+(roi>=0?'green':'red');
-  }
-}
-
-function renderHistory(){
+function renderLocalHistory() {
   const el = document.getElementById('hist-scroll');
-  if(!S.history.length){
-    el.innerHTML = '<div style="padding:12px 14px;font-size:12px;color:var(--text3)">Aún no hay tiradas.</div>';
+  if (!localHistory.length) {
+    el.innerHTML = '<div style="padding:10px 12px;font-size:12px;color:var(--text3)">Sin tiradas aún.</div>';
     return;
   }
-  el.innerHTML = S.history.slice(0,50).map(h=>{
+  el.innerHTML = localHistory.map(h => {
     const dstr = h.dice.join('-');
     const bnames = h.results.map(r=>(r.won?'✓':'✗')+' '+r.name).join(', ');
-    return `<div class="hist-row">
-      <span class="hist-dice">[${dstr}] Σ${h.total}</span>
-      <span class="hist-bets">${bnames}</span>
-      <span class="hist-net ${h.net>=0?'pos':'neg'}">${h.net>=0?'+':''}€${h.net.toFixed(2)}</span>
+    return `<div class="hr">
+      <span class="hr-dice">[${dstr}] Σ${h.total}</span>
+      <span class="hr-bets">${escHtml(bnames)}</span>
+      <span class="hr-net ${h.net>=0?'p':'n'}">${h.net>=0?'+':''}€${h.net.toFixed(2)}</span>
     </div>`;
   }).join('');
 }
 
-function setAmt(v){ document.getElementById('inp-amt').value=v; }
-
-function changeConfig(){
-  S.nDice = document.getElementById('sel-dice').value;
-  S.edge = document.getElementById('sel-edge').value;
-  S.cat = null;
-  S.queue = [];
-  renderCats();
-  renderQueue();
-  document.getElementById('bets-tbody').innerHTML='';
-  document.getElementById('bets-header').textContent='Selecciona una categoría';
-  document.getElementById('roll-btn').disabled=true;
-  document.getElementById('dice-area').style.display='none';
-  document.getElementById('results-area').style.display='none';
+// ---------------------------------------------------------------------------
+// JACKPOT
+// ---------------------------------------------------------------------------
+async function loadJackpot() {
+  try {
+    const data = await api('/jackpot');
+    document.getElementById('jp-amount').textContent = '€'+Math.round(data.amount).toLocaleString('es-ES');
+  } catch(e) {}
 }
 
-function resetGame(){
-  S.balance = parseFloat(document.getElementById('inp-balance').value)||1000;
-  S.wagered=0; S.won=0; S.lost=0; S.rolls=0;
-  S.queue=[]; S.history=[]; S.cat=null;
-  S.nDice=document.getElementById('sel-dice').value;
-  S.edge=document.getElementById('sel-edge').value;
-  renderCats(); renderQueue(); updateStats(); renderHistory();
-  document.getElementById('bets-tbody').innerHTML='';
-  document.getElementById('bets-header').textContent='Selecciona una categoría';
-  document.getElementById('roll-btn').disabled=true;
-  document.getElementById('dice-area').style.display='none';
-  document.getElementById('results-area').style.display='none';
+// ---------------------------------------------------------------------------
+// LEADERBOARD
+// ---------------------------------------------------------------------------
+async function loadLeaderboard() {
+  try {
+    const data = await api('/leaderboard');
+    const rankClass = i => i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'';
+    document.getElementById('lb-tbody').innerHTML = data.map((u,i) => `
+      <tr>
+        <td class="${rankClass(i)}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</td>
+        <td style="font-weight:${i<3?700:400}">${escHtml(u.username)}</td>
+        <td style="color:var(--yellow-t)">€${Math.round(u.balance).toLocaleString('es-ES')}</td>
+        <td style="color:var(--text2)">€${Math.round(u.total_wagered).toLocaleString('es-ES')}</td>
+        <td style="color:var(--text2)">${u.n_rolls}</td>
+        <td style="color:${u.roi>=0?'var(--green-t)':'var(--red-t)'}">${u.roi>=0?'+':''}${u.roi.toFixed(1)}%</td>
+      </tr>`).join('');
+  } catch(e) {}
 }
 
-renderCats();
-updateStats();
-renderHistory();
+// ---------------------------------------------------------------------------
+// RECENT ROLLS
+// ---------------------------------------------------------------------------
+async function loadRecent() {
+  try {
+    const data = await api('/recent-rolls');
+    const faces = ['','⚀','⚁','⚂','⚃','⚄','⚅'];
+    document.getElementById('recent-list').innerHTML = data.map(r => `
+      <div class="rr-item">
+        <span class="rr-user">${escHtml(r.username)}</span>
+        <span class="rr-dice">${r.dice.map(d=>faces[d]).join(' ')} Σ${r.total}</span>
+        <span class="rr-net" style="color:${r.net>=0?'var(--green-t)':'var(--red-t)'}">${r.net>=0?'+':''}€${r.net.toFixed(2)}</span>
+      </div>`).join('') || '<div style="color:var(--text3);font-size:13px">Ninguna tirada aún.</div>';
+  } catch(e) {}
+}
+
+// ---------------------------------------------------------------------------
+// TOURNAMENT
+// ---------------------------------------------------------------------------
+async function loadTournament() {
+  try {
+    const data = await api('/tournament');
+    const el = document.getElementById('tournament-content');
+    if (!data.active) {
+      el.innerHTML = '<div style="color:var(--text2);font-size:14px">No hay ningún torneo activo en este momento.<br>El administrador puede crear uno desde el panel de admin.</div>';
+      return;
+    }
+    const t = data.tournament;
+    const end = new Date(t.end_at).toLocaleString('es-ES');
+    el.innerHTML = `
+      <div class="tourn-card">
+        <div class="tourn-name">🎯 ${escHtml(t.name)}</div>
+        <div class="tourn-prize">Premio: €${Math.round(t.prize).toLocaleString('es-ES')} virtuales</div>
+        <div class="tourn-time">Termina: ${end}</div>
+      </div>
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>Jugador</th><th>Beneficio</th><th>Tiradas</th></tr></thead>
+        <tbody>${(data.leaderboard||[]).map((u,i)=>`
+          <tr>
+            <td>${i+1}</td>
+            <td>${escHtml(u.username)}</td>
+            <td style="color:${u.profit>=0?'var(--green-t)':'var(--red-t)'}">${u.profit>=0?'+':''}€${u.profit.toFixed(2)}</td>
+            <td>${u.n_rolls}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch(e) {}
+}
+
+// ---------------------------------------------------------------------------
+// CHAT
+// ---------------------------------------------------------------------------
+async function loadChat() {
+  try {
+    const msgs = await api('/chat');
+    const el = document.getElementById('chat-messages');
+    el.innerHTML = msgs.map(m => `
+      <div class="chat-msg">
+        <span class="chat-user">${escHtml(m.username)}</span>
+        <span class="chat-text">${escHtml(m.message)}</span>
+        <span class="chat-time">${formatTime(m.created_at)}</span>
+      </div>`).join('');
+    el.scrollTop = el.scrollHeight;
+  } catch(e) {}
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  try {
+    await api('/chat', 'POST', {message: msg});
+    loadChat();
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ---------------------------------------------------------------------------
+// ADMIN
+// ---------------------------------------------------------------------------
+async function loadAdmin() {
+  try {
+    const [stats, users] = await Promise.all([api('/admin/stats'), api('/admin/users')]);
+    document.getElementById('admin-stats-grid').innerHTML = `
+      <div class="admin-card"><h3>Jugadores</h3><div class="big">${stats.total_users}</div></div>
+      <div class="admin-card"><h3>Tiradas totales</h3><div class="big">${stats.total_rolls}</div></div>
+      <div class="admin-card"><h3>Total apostado</h3><div class="big">€${Math.round(stats.total_wagered).toLocaleString('es-ES')}</div></div>
+      <div class="admin-card"><h3>Jackpot actual</h3><div class="big" style="color:var(--gold)">€${Math.round(stats.jackpot.amount).toLocaleString('es-ES')}</div></div>`;
+    document.getElementById('admin-users-tbody').innerHTML = users.map(u => `
+      <tr>
+        <td>${u.id}</td>
+        <td>${escHtml(u.username)}</td>
+        <td style="color:var(--yellow-t)">€${Math.round(u.balance).toLocaleString('es-ES')}</td>
+        <td>€${Math.round(u.total_wagered).toLocaleString('es-ES')}</td>
+        <td>${u.n_rolls}</td>
+        <td>${u.is_admin?'✓':''}</td>
+        <td style="color:var(--text3)">${u.last_seen?.slice(0,16)||'—'}</td>
+      </tr>`).join('');
+  } catch(e) {}
+}
+
+async function adminReset() {
+  const user = document.getElementById('adm-user').value.trim();
+  const bal = parseFloat(document.getElementById('adm-bal').value);
+  if (!user) { toast('Introduce un usuario', 'err'); return; }
+  try {
+    await api('/admin/reset-balance', 'POST', {username: user, amount: bal});
+    toast(`Saldo de ${user} reseteado a €${bal}`, 'ok');
+    loadAdmin();
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+async function adminAdd() {
+  const user = document.getElementById('adm-add-user').value.trim();
+  const amt = parseFloat(document.getElementById('adm-add-amt').value);
+  if (!user) { toast('Introduce un usuario', 'err'); return; }
+  try {
+    await api('/admin/add-balance', 'POST', {username: user, amount: amt});
+    toast(`+€${amt} añadidos a ${user}`, 'ok');
+    loadAdmin();
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+async function adminTournament() {
+  const name = document.getElementById('adm-t-name').value.trim();
+  const hours = parseInt(document.getElementById('adm-t-hours').value);
+  const prize = parseFloat(document.getElementById('adm-t-prize').value);
+  if (!name) { toast('Introduce un nombre', 'err'); return; }
+  try {
+    await api('/admin/tournament', 'POST', {name, hours, prize});
+    toast(`Torneo "${name}" creado`, 'ok');
+  } catch(e) { toast(e.message, 'err'); }
+}
+
+// ---------------------------------------------------------------------------
+// POLLING — actualiza datos cada 10s
+// ---------------------------------------------------------------------------
+function startPolling() {
+  clearInterval(pollInterval);
+  pollInterval = setInterval(async () => {
+    loadJackpot();
+    const activeView = ['leaderboard','recent','tournament','chat'].find(v =>
+      document.getElementById(`view-${v}`)?.style.display !== 'none'
+    );
+    if (activeView === 'leaderboard') loadLeaderboard();
+    if (activeView === 'recent') loadRecent();
+    if (activeView === 'chat') loadChat();
+    if (activeView === 'tournament') loadTournament();
+  }, 10000);
+}
+
+// ---------------------------------------------------------------------------
+// UTILS
+// ---------------------------------------------------------------------------
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts.replace(' ','T')+'Z');
+  return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+}
+
+let toastTimer;
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), type==='jp'?5000:2500);
+}
 </script>
 </body>
 </html>
