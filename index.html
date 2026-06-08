@@ -434,6 +434,7 @@ input[type=number]:focus{border-color:var(--blue)}
 
 <script>
 const API = 'https://undergo-backed-joyous.ngrok-free.dev';
+const NGROK_HEADERS = {'ngrok-skip-browser-warning': 'true'};
 let token = localStorage.getItem('casino_token') || '';
 let me = JSON.parse(localStorage.getItem('casino_me') || 'null');
 let betsData = {};
@@ -520,7 +521,7 @@ if (token && me) { enterApp(); }
 async function api(path, method='GET', body=null) {
   const opts = {
     method,
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' }
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(API + path, opts);
