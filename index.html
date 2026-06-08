@@ -939,20 +939,18 @@ function formatTime(ts) {
 function isMob(){ return window.innerWidth <= 768; }
 function mobTab(tab) {
   if (window.innerWidth > 768) return;
-  // Update tab buttons
   ['cats','bets','play'].forEach(t => {
     const btn = document.getElementById('mobt-' + t);
     if (!btn) return;
     btn.style.borderBottomColor = t===tab ? 'var(--blue)' : 'transparent';
     btn.style.color = t===tab ? 'var(--blue-t)' : 'var(--text2)';
   });
-  // Show/hide panels
   const sidebar = document.querySelector('.sidebar');
-  const center = document.querySelector('.center');
-  const rpanel = document.querySelector('.rpanel');
-  if (sidebar) sidebar.style.display = tab==='cats' ? 'flex' : 'none';
-  if (center)  center.style.display  = tab==='bets' ? 'flex' : 'none';
-  if (rpanel)  rpanel.style.display  = tab==='play' ? 'flex' : 'none';
+  const center  = document.querySelector('.center');
+  if (sidebar) sidebar.classList.toggle('mshow', tab==='cats');
+  if (center)  center.classList.toggle('mshow',  tab==='bets');
+  // rpanel always visible, just scroll to top on play tab
+  if (tab==='play') window.scrollTo({top:document.querySelector('.rpanel')?.offsetTop||0, behavior:'smooth'});
 }
 
 
