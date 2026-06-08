@@ -967,14 +967,16 @@ const DiceEngine = (function(){
   let renderer, scene, camera, animId;
   let diceObjects = [];
   let isRolling = false;
+  // Rotations to show each face toward camera (camera at +Z)
+  // faceVals=[2,5,1,6,3,4]: right=2,left=5,top=1,bottom=6,front=3,back=4
   const FACE_ROT = [
     null,
-    {x:0, z:0},
-    {x:Math.PI, z:0},
-    {x:-Math.PI/2, z:0},
-    {x:Math.PI/2, z:0},
-    {x:0, z:Math.PI/2},
-    {x:0, z:-Math.PI/2},
+    {x:-Math.PI/2, y:0},   // 1: top(+Y) → rotate -90 around X
+    {x:0, y:-Math.PI/2},   // 2: right(+X) → rotate -90 around Y
+    {x:0, y:0},             // 3: front(+Z) → no rotation
+    {x:0, y:Math.PI},      // 4: back(-Z) → rotate 180 around Y
+    {x:0, y:Math.PI/2},    // 5: left(-X) → rotate +90 around Y
+    {x:Math.PI/2, y:0},    // 6: bottom(-Y) → rotate +90 around X
   ];
 
   function makeTex(value) {
@@ -1024,7 +1026,7 @@ const DiceEngine = (function(){
     const mats=faceVals.map(v=>new THREE.MeshStandardMaterial({map:makeTex(v),roughness:0.25,metalness:0.15}));
     const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1), mats);
     const rot=FACE_ROT[value];
-    mesh.userData={value,targetX:rot.x,targetZ:rot.z,
+    mesh.userData={value,targetX:rot.x,targetY:rot.y||0,targetZ:0,
       velX:(Math.random()-0.5)*22,velY:(Math.random()-0.5)*22,velZ:(Math.random()-0.5)*22,
       rolling:true,rollTime:0,rollDur:1.2+Math.random()*0.8};
     return mesh;
@@ -1079,7 +1081,7 @@ const DiceEngine = (function(){
         const t=die.userData.rollTime/die.userData.rollDur;
         if(t>=1){
           die.rotation.x=die.userData.targetX;
-          die.rotation.y=0;
+          die.rotation.y=die.userData.targetY;
           die.rotation.z=die.userData.targetZ;
           die.userData.rolling=false;
           return;
@@ -1091,6 +1093,7 @@ const DiceEngine = (function(){
         if(t>0.65){
           const bl=easeOut((t-0.65)/0.35);
           die.rotation.x+=(die.userData.targetX-die.rotation.x)*bl*0.12;
+          die.rotation.y+=(die.userData.targetY-die.rotation.y)*bl*0.12;
           die.rotation.z+=(die.userData.targetZ-die.rotation.z)*bl*0.12;
         }
         die.position.y=Math.sin(t*Math.PI)*0.6;
