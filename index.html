@@ -509,6 +509,12 @@ function enterApp() {
   loadBets();
   loadJackpot();
   startPolling();
+  // Init mobile tabs
+  if (window.innerWidth <= 768) {
+    const mt = document.querySelector('.mobile-tabs');
+    if (mt) mt.style.display = 'flex';
+    mobTab('cats');
+  }
 }
 
 function logout() {
@@ -932,25 +938,26 @@ function formatTime(ts) {
 // MOBILE TABS
 function isMob(){ return window.innerWidth <= 768; }
 function mobTab(tab) {
-  const isMobile = window.innerWidth <= 768;
-  if (!isMobile) return;
-  document.querySelectorAll('.mob-tab').forEach(t => {
-    t.style.borderBottomColor = 'transparent';
-    t.style.color = 'var(--text2)';
+  if (window.innerWidth > 768) return;
+  // Update tab buttons
+  ['cats','bets','play'].forEach(t => {
+    const btn = document.getElementById('mobt-' + t);
+    if (!btn) return;
+    btn.style.borderBottomColor = t===tab ? 'var(--blue)' : 'transparent';
+    btn.style.color = t===tab ? 'var(--blue-t)' : 'var(--text2)';
   });
-  const active = document.getElementById('mobt-' + tab);
-  if (active) { active.style.borderBottomColor = 'var(--blue)'; active.style.color = 'var(--blue-t)'; }
-  document.querySelector('.sidebar').classList.toggle('mob-active', tab==='cats');
-  document.querySelector('.center').classList.toggle('mob-active', tab==='bets');
-  document.querySelector('.rpanel').classList.toggle('mob-active', tab==='play');
+  // Show/hide panels
+  const sidebar = document.querySelector('.sidebar');
+  const center = document.querySelector('.center');
+  const rpanel = document.querySelector('.rpanel');
+  if (sidebar) sidebar.style.display = tab==='cats' ? 'flex' : 'none';
+  if (center)  center.style.display  = tab==='bets' ? 'flex' : 'none';
+  if (rpanel)  rpanel.style.display  = tab==='play' ? 'flex' : 'none';
 }
 
 
 
-// Init mobile
-if (window.innerWidth <= 768) {
-  mobTab('cats');
-}
+// Mobile init handled in enterApp()
 
 
 // ============================================================
@@ -1101,6 +1108,9 @@ function ensureDiceEngine(){
   if(diceEngineReady) return;
   const cv=document.getElementById('dice-canvas');
   if(!cv||typeof THREE==='undefined') return;
+  // Make sure canvas has proper dimensions before init
+  const wrap=document.getElementById('dice-canvas-wrap');
+  if(wrap){cv.width=wrap.clientWidth||300;cv.height=wrap.clientHeight||160;}
   DiceEngine.init(cv);
   diceEngineReady=true;
 }
