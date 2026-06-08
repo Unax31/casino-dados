@@ -209,101 +209,12 @@ input[type=number]:focus{border-color:var(--blue)}
 .toast.err{border-color:var(--red);color:var(--red-t)}
 .toast.jp{border-color:var(--gold);color:var(--gold);font-size:16px;font-weight:700}
 
-/* MOBILE RESPONSIVE */
-@media(max-width:768px){
-  body{overflow-x:hidden}
-  header{padding:8px 10px;gap:6px;flex-wrap:wrap}
-  .logo{font-size:15px}
-  .hstats{gap:4px;order:3;width:100%}
-  .hs{padding:3px 8px;flex:1;text-align:center}
-  .hs label{font-size:9px}
-  .hs .v{font-size:12px}
-  .header-right{margin-left:auto;gap:4px}
-  .nav-btn,.logout-btn{padding:4px 7px;font-size:10px}
-  .jackpot-bar{padding:5px 10px;font-size:11px}
-  .jp-hint{display:none}
-  .jp-amount{font-size:14px}
-
-  /* GAME: stack columns */
-  .app-body{
-    display:flex!important;
-    flex-direction:column!important;
-    overflow:visible!important;
-    height:auto!important;
-  }
-  .view#view-game{
-    display:flex!important;
-    flex-direction:column!important;
-    grid-column:unset!important;
-  }
-  .sidebar{
-    display:none;
-    border-right:none;
-    border-bottom:1px solid var(--border);
-    max-height:220px;
-    overflow-y:auto;
-  }
-  .sidebar.mshow{display:block}
-  .center{
-    display:none;
-    border-right:none;
-    min-height:280px;
-    max-height:350px;
-  }
-  .center.mshow{display:flex}
-  .rpanel{
-    display:flex;
-    border-left:none;
-    border-top:1px solid var(--border);
-    flex-direction:column;
-  }
-  .hist-area{max-height:200px}
-
-  /* mobile tab bar */
-  .mtabs{
-    display:flex!important;
-    background:var(--bg2);
-    border-bottom:1px solid var(--border);
-    flex-shrink:0;
-  }
-  .mtab{
-    flex:1;
-    padding:10px 4px;
-    font-size:12px;
-    font-weight:600;
-    background:none;
-    border:none;
-    border-bottom:2px solid transparent;
-    color:var(--text2);
-    cursor:pointer;
-    text-align:center;
-  }
-  .mtab.on{border-bottom-color:var(--blue);color:var(--blue-t)}
-
-  /* other views */
-  #view-leaderboard,#view-recent,#view-tournament,#view-chat,#view-admin{
-    grid-column:unset!important;
-    width:100%;
-  }
-  .view-inner{padding:12px}
-  .lb-table{font-size:11px}
-  .lb-table th,.lb-table td{padding:5px 6px}
-  .admin-grid{grid-template-columns:1fr 1fr}
-  .form-row{flex-direction:column}
-  .chat-messages{height:55vh}
-
-  /* builder tweaks */
-  .rp-section{padding:10px}
-  .qbtns{gap:3px}
-  .qb{padding:4px 8px;font-size:12px}
-  .roll-btn{font-size:14px;padding:12px}
-}
-
 /* SCROLLBARS */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
@@ -357,13 +268,6 @@ input[type=number]:focus{border-color:var(--blue)}
     <span class="jp-label">🏆 JACKPOT</span>
     <span class="jp-amount" id="jp-amount">€5.000</span>
     <span class="jp-hint">— gánalo con todos los dados iguales (apuesta mín. €5)</span>
-  </div>
-
-  <!-- MOBILE TAB BAR -->
-  <div class="mtabs" style="display:none">
-    <button class="mtab on" id="mt-cats" onclick="mTab('cats')">📋 Categorías</button>
-    <button class="mtab" id="mt-bets" onclick="mTab('bets')">🎯 Apuestas</button>
-    <button class="mtab" id="mt-play" onclick="mTab('play')">🎲 Jugar</button>
   </div>
 
   <!-- GAME VIEW -->
@@ -427,7 +331,8 @@ input[type=number]:focus{border-color:var(--blue)}
         </div>
 
         <div id="dice-section" style="display:none" class="dice-section">
-          <div class="dice-row" id="dice-row"></div>
+          <div id="dice-canvas-wrap"><canvas id="dice-canvas"></canvas></div>
+          <div class="dice-msg" id="dice-msg"></div>
           <div class="sum-line">Suma: <b id="sum-val">—</b></div>
         </div>
 
@@ -705,7 +610,6 @@ function selectCat(cat) {
   renderCategories();
   if (window.innerWidth <= 768) mobTab('bets');
   document.getElementById('cat-title').textContent = cat;
-  if(isMob()) mTab('bets');
   const bets = betsData[cat] || [];
   document.getElementById('bets-tbody').innerHTML = bets.map(b => {
     const pct = (b.prob*100).toFixed(b.prob<0.001?4:b.prob<0.01?3:2);
@@ -727,7 +631,7 @@ function addBet(id, name, odds) {
   document.getElementById('dice-section').style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('jp-win-section').style.display = 'none';
-  if(isMob()) mTab('play');
+  if (window.innerWidth <= 768) mobTab('play');
 }
 
 function removeQ(i) {
@@ -780,34 +684,33 @@ async function doRoll() {
 }
 
 function showRollResult(data) {
-  const faces = ['','⚀','⚁','⚂','⚃','⚄','⚅'];
   document.getElementById('dice-section').style.display = 'block';
-  const allWon = data.results.every(r=>r.won);
-  document.getElementById('dice-row').innerHTML = data.dice.map(d =>
-    `<div class="die ${allWon?'win':''}">${faces[d]}</div>`
-  ).join('');
-  document.getElementById('sum-val').textContent = data.total;
-
-  if (data.jackpot_won) {
-    document.getElementById('jp-win-section').style.display = 'block';
-    document.getElementById('jp-win-amt').textContent = '€'+data.jackpot_amount.toLocaleString('es-ES');
-    toast('🏆 ¡JACKPOT! €'+Math.round(data.jackpot_amount).toLocaleString('es-ES'), 'jp');
-  } else {
-    document.getElementById('jp-win-section').style.display = 'none';
-  }
-
-  document.getElementById('results-section').style.display = 'block';
-  document.getElementById('results-list').innerHTML = data.results.map(r => `
-    <div class="ri">
-      <span class="ri-badge ${r.won?'w':'l'}">${r.won?'✓ GANÓ':'✗ PERDIÓ'}</span>
-      <span class="ri-name">${escHtml(r.name)}</span>
-      <span class="ri-pay ${r.payout>=0?'p':'n'}">${r.payout>=0?'+':''}€${r.payout.toFixed(2)}</span>
-    </div>`).join('');
-
-  const netEl = document.getElementById('net-val');
-  netEl.textContent = (data.net>=0?'+':'')+'€'+data.net.toFixed(2);
-  netEl.className = data.net>=0 ? 'p' : 'n';
+  document.getElementById('sum-val').textContent = '...';
+  document.getElementById('dice-msg').textContent = '🎲 Rodando...';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('jp-win-section').style.display = 'none';
+  ensureDiceEngine();
+  DiceEngine.rollDice(data.dice, () => {
+    document.getElementById('sum-val').textContent = data.total;
+    document.getElementById('dice-msg').textContent = '';
+    if (data.jackpot_won) {
+      document.getElementById('jp-win-section').style.display = 'block';
+      document.getElementById('jp-win-amt').textContent = '€'+data.jackpot_amount.toLocaleString('es-ES');
+      toast('🏆 ¡JACKPOT! €'+Math.round(data.jackpot_amount).toLocaleString('es-ES'), 'jp');
+    }
+    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('results-list').innerHTML = data.results.map(r => `
+      <div class="ri">
+        <span class="ri-badge ${r.won?'w':'l'}">${r.won?'✓ GANÓ':'✗ PERDIÓ'}</span>
+        <span class="ri-name">${escHtml(r.name)}</span>
+        <span class="ri-pay ${r.payout>=0?'p':'n'}">${r.payout>=0?'+':''}€${r.payout.toFixed(2)}</span>
+      </div>`).join('');
+    const netEl = document.getElementById('net-val');
+    netEl.textContent = (data.net>=0?'+':'')+'€'+data.net.toFixed(2);
+    netEl.className = data.net>=0 ? 'p' : 'n';
+  });
 }
+
 
 let localHistory = [];
 function addToLocalHistory(data) {
@@ -1027,6 +930,7 @@ function formatTime(ts) {
 }
 
 // MOBILE TABS
+function isMob(){ return window.innerWidth <= 768; }
 function mobTab(tab) {
   const isMobile = window.innerWidth <= 768;
   if (!isMobile) return;
@@ -1048,28 +952,158 @@ if (window.innerWidth <= 768) {
   mobTab('cats');
 }
 
-// ---- MOBILE TABS ----
-function isMob(){ return window.innerWidth <= 768; }
-function mTab(t){
-  if(!isMob()) return;
-  ['cats','bets','play'].forEach(x=>{
-    document.getElementById('mt-'+x)?.classList.toggle('on', x===t);
-  });
-  document.querySelector('.sidebar')?.classList.toggle('mshow', t==='cats');
-  document.querySelector('.center')?.classList.toggle('mshow', t==='bets');
-  // rpanel always visible on mobile, just scroll to it
-  if(t==='play') document.querySelector('.rpanel')?.scrollIntoView({behavior:'smooth'});
+
+// ============================================================
+// 3D DICE ENGINE (Three.js)
+// ============================================================
+const DiceEngine = (function(){
+  let renderer, scene, camera, animId;
+  let diceObjects = [];
+  let isRolling = false;
+  const FACE_ROT = [
+    null,
+    {x:0, z:0},
+    {x:Math.PI, z:0},
+    {x:-Math.PI/2, z:0},
+    {x:Math.PI/2, z:0},
+    {x:0, z:Math.PI/2},
+    {x:0, z:-Math.PI/2},
+  ];
+
+  function makeTex(value) {
+    const sz = 256;
+    const cv = document.createElement('canvas');
+    cv.width = sz; cv.height = sz;
+    const ctx = cv.getContext('2d');
+    // bg
+    ctx.fillStyle = '#12122a';
+    rr(ctx,0,0,sz,sz,36); ctx.fill();
+    // border glow
+    ctx.strokeStyle = value===1?'#ff4455':'#5555cc';
+    ctx.lineWidth = 8;
+    rr(ctx,4,4,sz-8,sz-8,34); ctx.stroke();
+    // dots
+    ctx.fillStyle = value===1?'#ff3344':'#e0e0ff';
+    const r=20, c=sz/2, o=72;
+    const pts = {
+      1:[[c,c]],
+      2:[[c-o,c-o],[c+o,c+o]],
+      3:[[c-o,c-o],[c,c],[c+o,c+o]],
+      4:[[c-o,c-o],[c+o,c-o],[c-o,c+o],[c+o,c+o]],
+      5:[[c-o,c-o],[c+o,c-o],[c,c],[c-o,c+o],[c+o,c+o]],
+      6:[[c-o,c-o],[c+o,c-o],[c-o,c],[c+o,c],[c-o,c+o],[c+o,c+o]],
+    };
+    for(const [px,py] of (pts[value]||[])){
+      ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2); ctx.fill();
+    }
+    return new THREE.CanvasTexture(cv);
+  }
+
+  function rr(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+    ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);
+    ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);
+    ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);
+    ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+  }
+
+  function makeDie(value){
+    const faceVals=[2,5,1,6,3,4];
+    const mats=faceVals.map(v=>new THREE.MeshStandardMaterial({map:makeTex(v),roughness:0.25,metalness:0.15}));
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1), mats);
+    const rot=FACE_ROT[value];
+    mesh.userData={value,targetX:rot.x,targetZ:rot.z,
+      velX:(Math.random()-0.5)*22,velY:(Math.random()-0.5)*22,velZ:(Math.random()-0.5)*22,
+      rolling:true,rollTime:0,rollDur:1.2+Math.random()*0.8};
+    return mesh;
+  }
+
+  function init(canvasEl){
+    const w=canvasEl.clientWidth||300, h=canvasEl.clientHeight||160;
+    renderer=new THREE.WebGLRenderer({canvas:canvasEl,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(w,h);
+    scene=new THREE.Scene();
+    camera=new THREE.PerspectiveCamera(38,w/h,0.1,50);
+    camera.position.set(0,2.5,7); camera.lookAt(0,0,0);
+    scene.add(new THREE.AmbientLight(0x8888cc,0.9));
+    const dl=new THREE.DirectionalLight(0xffffff,1.4);
+    dl.position.set(3,5,3); scene.add(dl);
+    scene.add(new THREE.DirectionalLight(0x4444ff,0.3).position.set(-3,-2,-3)&&dl||new THREE.DirectionalLight(0x4444ff,0.3));
+    window.addEventListener('resize',()=>{
+      const nw=canvasEl.clientWidth,nh=canvasEl.clientHeight;
+      if(nw&&nh){renderer.setSize(nw,nh);camera.aspect=nw/nh;camera.updateProjectionMatrix();}
+    });
+  }
+
+  function easeOut(t){return 1-Math.pow(1-t,3);}
+
+  function rollDice(values, onDone){
+    if(!renderer) return;
+    isRolling=true;
+    cancelAnimationFrame(animId);
+    diceObjects.forEach(d=>scene.remove(d));
+    diceObjects=[];
+    const n=values.length;
+    const sp=Math.min(1.5,8/n);
+    const sx=-(n-1)*sp/2;
+    values.forEach((v,i)=>{
+      const die=makeDie(v);
+      die.position.set(sx+i*sp,0,0);
+      die.rotation.set(Math.random()*Math.PI*2,Math.random()*Math.PI*2,Math.random()*Math.PI*2);
+      scene.add(die); diceObjects.push(die);
+    });
+    let done=false;
+    function loop(){
+      animId=requestAnimationFrame(loop);
+      const allDone=diceObjects.every(d=>!d.userData.rolling);
+      if(allDone&&!done){done=true;isRolling=false;setTimeout(onDone,300);}
+      diceObjects.forEach(die=>{
+        if(!die.userData.rolling){
+          die.position.y=Math.sin(Date.now()*0.003+die.userData.value)*0.02;
+          return;
+        }
+        die.userData.rollTime+=0.016;
+        const t=die.userData.rollTime/die.userData.rollDur;
+        if(t>=1){
+          die.rotation.x=die.userData.targetX;
+          die.rotation.y=0;
+          die.rotation.z=die.userData.targetZ;
+          die.userData.rolling=false;
+          return;
+        }
+        const spin=1-easeOut(Math.min(t*1.4,1));
+        die.rotation.x+=die.userData.velX*0.016*spin;
+        die.rotation.y+=die.userData.velY*0.016*spin;
+        die.rotation.z+=die.userData.velZ*0.016*spin;
+        if(t>0.65){
+          const bl=easeOut((t-0.65)/0.35);
+          die.rotation.x+=(die.userData.targetX-die.rotation.x)*bl*0.12;
+          die.rotation.z+=(die.userData.targetZ-die.rotation.z)*bl*0.12;
+        }
+        die.position.y=Math.sin(t*Math.PI)*0.6;
+      });
+      renderer.render(scene,camera);
+    }
+    loop();
+  }
+
+  return {init, rollDice};
+})();
+
+let diceEngineReady=false;
+function ensureDiceEngine(){
+  if(diceEngineReady) return;
+  const cv=document.getElementById('dice-canvas');
+  if(!cv||typeof THREE==='undefined') return;
+  DiceEngine.init(cv);
+  diceEngineReady=true;
 }
-function initMobile(){
-  if(!isMob()) return;
-  document.querySelector('.mtabs').style.display='flex';
-  mTab('cats');
-}
-window.addEventListener('resize', ()=>{ if(!isMob()) {
-  document.querySelector('.mtabs').style.display='none';
-  document.querySelector('.sidebar')?.classList.remove('mshow');
-  document.querySelector('.center')?.classList.remove('mshow');
-}});
 
 let toastTimer;
 function toast(msg, type='ok') {
