@@ -967,17 +967,7 @@ const DiceEngine = (function(){
   let renderer, scene, camera, animId;
   let diceObjects = [];
   let isRolling = false;
-  // Rotations to show each face toward camera (camera at +Z)
-  // faceVals=[2,5,1,6,3,4]: right=2,left=5,top=1,bottom=6,front=3,back=4
-  const FACE_ROT = [
-    null,
-    {x:-Math.PI/2, y:0},   // 1: top(+Y) → rotate -90 around X
-    {x:0, y:-Math.PI/2},   // 2: right(+X) → rotate -90 around Y
-    {x:0, y:0},             // 3: front(+Z) → no rotation
-    {x:0, y:Math.PI},      // 4: back(-Z) → rotate 180 around Y
-    {x:0, y:Math.PI/2},    // 5: left(-X) → rotate +90 around Y
-    {x:Math.PI/2, y:0},    // 6: bottom(-Y) → rotate +90 around X
-  ];
+  // Face value placed directly on front face - no rotation needed
 
   function makeTex(value) {
     const sz = 256;
@@ -1022,11 +1012,18 @@ const DiceEngine = (function(){
   }
 
   function makeDie(value){
-    const faceVals=[2,5,1,6,3,4];
+    // BoxGeometry face order: +X, -X, +Y, -Y, +Z(front), -Z(back)
+    // Put the value on front (+Z, index 4), others are decorative opposites
+    const opposite = {1:6,2:5,3:4,4:3,5:2,6:1};
+    const op = opposite[value];
+    // front=value, back=opposite, top=random neighbor, etc.
+    const neighbors = [1,2,3,4,5,6].filter(v=>v!==value&&v!==op);
+    const [r,l,t,b] = neighbors;
+    const faceVals=[r,l,t,b,value,op]; // +X,-X,+Y,-Y,+Z(front),-Z(back)
     const mats=faceVals.map(v=>new THREE.MeshStandardMaterial({map:makeTex(v),roughness:0.25,metalness:0.15}));
     const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,1,1), mats);
-    const rot=FACE_ROT[value];
-    mesh.userData={value,targetX:rot.x,targetY:rot.y||0,targetZ:0,
+    // No rotation needed - value is already on front face
+    mesh.userData={value,targetX:0,targetY:0,targetZ:0,
       velX:(Math.random()-0.5)*22,velY:(Math.random()-0.5)*22,velZ:(Math.random()-0.5)*22,
       rolling:true,rollTime:0,rollDur:1.2+Math.random()*0.8};
     return mesh;
