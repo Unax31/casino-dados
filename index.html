@@ -256,6 +256,13 @@ input[type=number]:focus{border-color:var(--blue)}
     </div>
   </header>
 
+  <!-- MOBILE TABS (solo visibles en móvil) -->
+  <div class="mobile-tabs" style="display:none;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0">
+    <button class="mob-tab active" onclick="mobTab('cats')" id="mobt-cats" style="flex:1;min-width:70px;padding:9px 6px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid var(--blue);color:var(--blue-t);cursor:pointer;white-space:nowrap">Categorías</button>
+    <button class="mob-tab" onclick="mobTab('bets')" id="mobt-bets" style="flex:1;min-width:70px;padding:9px 6px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;white-space:nowrap">Apuestas</button>
+    <button class="mob-tab" onclick="mobTab('play')" id="mobt-play" style="flex:1;min-width:70px;padding:9px 6px;font-size:12px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;white-space:nowrap">Jugar</button>
+  </div>
+
   <div class="jackpot-bar">
     <span class="jp-label">🏆 JACKPOT</span>
     <span class="jp-amount" id="jp-amount">€5.000</span>
@@ -433,8 +440,7 @@ input[type=number]:focus{border-color:var(--blue)}
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'https://undergo-backed-joyous.ngrok-free.dev';
-const NGROK_HEADERS = {'ngrok-skip-browser-warning': 'true'};
+const API = 'http://localhost:8000';
 let token = localStorage.getItem('casino_token') || '';
 let me = JSON.parse(localStorage.getItem('casino_me') || 'null');
 let betsData = {};
@@ -521,7 +527,7 @@ if (token && me) { enterApp(); }
 async function api(path, method='GET', body=null) {
   const opts = {
     method,
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' }
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(API + path, opts);
@@ -600,6 +606,7 @@ function renderCategories() {
 function selectCat(cat) {
   currentCat = cat;
   renderCategories();
+  if (window.innerWidth <= 768) mobTab('bets');
   document.getElementById('cat-title').textContent = cat;
   const bets = betsData[cat] || [];
   document.getElementById('bets-tbody').innerHTML = bets.map(b => {
@@ -622,6 +629,7 @@ function addBet(id, name, odds) {
   document.getElementById('dice-section').style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('jp-win-section').style.display = 'none';
+  if (window.innerWidth <= 768) mobTab('play');
 }
 
 function removeQ(i) {
@@ -918,6 +926,28 @@ function formatTime(ts) {
   if (!ts) return '';
   const d = new Date(ts.replace(' ','T')+'Z');
   return d.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+}
+
+// MOBILE TABS
+function mobTab(tab) {
+  const isMobile = window.innerWidth <= 768;
+  if (!isMobile) return;
+  document.querySelectorAll('.mob-tab').forEach(t => {
+    t.style.borderBottomColor = 'transparent';
+    t.style.color = 'var(--text2)';
+  });
+  const active = document.getElementById('mobt-' + tab);
+  if (active) { active.style.borderBottomColor = 'var(--blue)'; active.style.color = 'var(--blue-t)'; }
+  document.querySelector('.sidebar').classList.toggle('mob-active', tab==='cats');
+  document.querySelector('.center').classList.toggle('mob-active', tab==='bets');
+  document.querySelector('.rpanel').classList.toggle('mob-active', tab==='play');
+}
+
+
+
+// Init mobile
+if (window.innerWidth <= 768) {
+  mobTab('cats');
 }
 
 let toastTimer;
