@@ -209,6 +209,96 @@ input[type=number]:focus{border-color:var(--blue)}
 .toast.err{border-color:var(--red);color:var(--red-t)}
 .toast.jp{border-color:var(--gold);color:var(--gold);font-size:16px;font-weight:700}
 
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  body{overflow-x:hidden}
+  header{padding:8px 10px;gap:6px;flex-wrap:wrap}
+  .logo{font-size:15px}
+  .hstats{gap:4px;order:3;width:100%}
+  .hs{padding:3px 8px;flex:1;text-align:center}
+  .hs label{font-size:9px}
+  .hs .v{font-size:12px}
+  .header-right{margin-left:auto;gap:4px}
+  .nav-btn,.logout-btn{padding:4px 7px;font-size:10px}
+  .jackpot-bar{padding:5px 10px;font-size:11px}
+  .jp-hint{display:none}
+  .jp-amount{font-size:14px}
+
+  /* GAME: stack columns */
+  .app-body{
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:visible!important;
+    height:auto!important;
+  }
+  .view#view-game{
+    display:flex!important;
+    flex-direction:column!important;
+    grid-column:unset!important;
+  }
+  .sidebar{
+    display:none;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+    max-height:220px;
+    overflow-y:auto;
+  }
+  .sidebar.mshow{display:block}
+  .center{
+    display:none;
+    border-right:none;
+    min-height:280px;
+    max-height:350px;
+  }
+  .center.mshow{display:flex}
+  .rpanel{
+    display:flex;
+    border-left:none;
+    border-top:1px solid var(--border);
+    flex-direction:column;
+  }
+  .hist-area{max-height:200px}
+
+  /* mobile tab bar */
+  .mtabs{
+    display:flex!important;
+    background:var(--bg2);
+    border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  .mtab{
+    flex:1;
+    padding:10px 4px;
+    font-size:12px;
+    font-weight:600;
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    color:var(--text2);
+    cursor:pointer;
+    text-align:center;
+  }
+  .mtab.on{border-bottom-color:var(--blue);color:var(--blue-t)}
+
+  /* other views */
+  #view-leaderboard,#view-recent,#view-tournament,#view-chat,#view-admin{
+    grid-column:unset!important;
+    width:100%;
+  }
+  .view-inner{padding:12px}
+  .lb-table{font-size:11px}
+  .lb-table th,.lb-table td{padding:5px 6px}
+  .admin-grid{grid-template-columns:1fr 1fr}
+  .form-row{flex-direction:column}
+  .chat-messages{height:55vh}
+
+  /* builder tweaks */
+  .rp-section{padding:10px}
+  .qbtns{gap:3px}
+  .qb{padding:4px 8px;font-size:12px}
+  .roll-btn{font-size:14px;padding:12px}
+}
+
 /* SCROLLBARS */
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -267,6 +357,13 @@ input[type=number]:focus{border-color:var(--blue)}
     <span class="jp-label">🏆 JACKPOT</span>
     <span class="jp-amount" id="jp-amount">€5.000</span>
     <span class="jp-hint">— gánalo con todos los dados iguales (apuesta mín. €5)</span>
+  </div>
+
+  <!-- MOBILE TAB BAR -->
+  <div class="mtabs" style="display:none">
+    <button class="mtab on" id="mt-cats" onclick="mTab('cats')">📋 Categorías</button>
+    <button class="mtab" id="mt-bets" onclick="mTab('bets')">🎯 Apuestas</button>
+    <button class="mtab" id="mt-play" onclick="mTab('play')">🎲 Jugar</button>
   </div>
 
   <!-- GAME VIEW -->
@@ -440,7 +537,7 @@ input[type=number]:focus{border-color:var(--blue)}
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'http://localhost:8000';
+const API = 'https://undergo-backed-joyous.ngrok-free.dev';
 let token = localStorage.getItem('casino_token') || '';
 let me = JSON.parse(localStorage.getItem('casino_me') || 'null');
 let betsData = {};
@@ -527,7 +624,7 @@ if (token && me) { enterApp(); }
 async function api(path, method='GET', body=null) {
   const opts = {
     method,
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' }
   };
   if (body) opts.body = JSON.stringify(body);
   const res = await fetch(API + path, opts);
@@ -608,6 +705,7 @@ function selectCat(cat) {
   renderCategories();
   if (window.innerWidth <= 768) mobTab('bets');
   document.getElementById('cat-title').textContent = cat;
+  if(isMob()) mTab('bets');
   const bets = betsData[cat] || [];
   document.getElementById('bets-tbody').innerHTML = bets.map(b => {
     const pct = (b.prob*100).toFixed(b.prob<0.001?4:b.prob<0.01?3:2);
@@ -629,7 +727,7 @@ function addBet(id, name, odds) {
   document.getElementById('dice-section').style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('jp-win-section').style.display = 'none';
-  if (window.innerWidth <= 768) mobTab('play');
+  if(isMob()) mTab('play');
 }
 
 function removeQ(i) {
@@ -949,6 +1047,29 @@ function mobTab(tab) {
 if (window.innerWidth <= 768) {
   mobTab('cats');
 }
+
+// ---- MOBILE TABS ----
+function isMob(){ return window.innerWidth <= 768; }
+function mTab(t){
+  if(!isMob()) return;
+  ['cats','bets','play'].forEach(x=>{
+    document.getElementById('mt-'+x)?.classList.toggle('on', x===t);
+  });
+  document.querySelector('.sidebar')?.classList.toggle('mshow', t==='cats');
+  document.querySelector('.center')?.classList.toggle('mshow', t==='bets');
+  // rpanel always visible on mobile, just scroll to it
+  if(t==='play') document.querySelector('.rpanel')?.scrollIntoView({behavior:'smooth'});
+}
+function initMobile(){
+  if(!isMob()) return;
+  document.querySelector('.mtabs').style.display='flex';
+  mTab('cats');
+}
+window.addEventListener('resize', ()=>{ if(!isMob()) {
+  document.querySelector('.mtabs').style.display='none';
+  document.querySelector('.sidebar')?.classList.remove('mshow');
+  document.querySelector('.center')?.classList.remove('mshow');
+}});
 
 let toastTimer;
 function toast(msg, type='ok') {
