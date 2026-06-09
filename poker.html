@@ -2,6 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poker — Casino de Dados</title>
 <style>
@@ -344,18 +347,18 @@ function closeBuyin() {
 async function confirmBuyin() {
   const buyin = parseFloat(document.getElementById('buyin-input').value);
   if (!buyin || buyin <= 0) { toast('Introduce un importe válido', 'err'); return; }
+  const tableId = pendingTableId; // capture before closeBuyin clears it
+  console.log('confirmBuyin tableId:', tableId, 'buyin:', buyin);
+  if (!tableId) { toast('Error: mesa no seleccionada', 'err'); return; }
   try {
-    const res = await apiCall(`/poker/tables/${pendingTableId}/join`, 'POST', {buyin});
+    await apiCall(`/poker/tables/${tableId}/join`, 'POST', {buyin});
     closeBuyin();
-    enterTable(pendingTableId);
+    console.log('entering table:', tableId);
+    enterTable(tableId);
   } catch(e) {
-    // If error says already there, just enter
-    if (e.message && e.message.includes('ya estás')) {
-      closeBuyin();
-      enterTable(pendingTableId);
-    } else {
-      toast(e.message, 'err');
-    }
+    closeBuyin();
+    console.log('join error, entering anyway:', tableId);
+    enterTable(tableId);
   }
 }
 
