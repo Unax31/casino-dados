@@ -286,7 +286,7 @@ input[type=number]:focus{border-color:var(--blue)}
       <button class="nav-btn" onclick="showView('tournament')" id="nav-tournament">Torneo</button>
       <button class="nav-btn" onclick="showView('chat')" id="nav-chat">Chat</button>
       <button class="nav-btn" id="nav-admin" style="display:none" onclick="showView('admin')">Admin</button>
-      <button class="nav-btn" onclick="window.location.href='poker.html'" style="background:var(--yellow-d);color:var(--yellow-t);border-color:var(--yellow)">🃏 Poker</button>
+      <button class="nav-btn" id="nav-poker" onclick="showView('poker')" style="background:var(--yellow-d);color:var(--yellow-t);border-color:var(--yellow)">🃏 Poker</button>
       <button class="logout-btn" onclick="logout()">Salir</button>
     </div>
   </header>
@@ -470,6 +470,87 @@ input[type=number]:focus{border-color:var(--blue)}
       </div>
     </div>
 
+
+    <!-- POKER VIEW -->
+    <div class="view" id="view-poker" style="display:none;grid-column:1/-1;flex-direction:column;height:100%">
+      <!-- POKER LOBBY -->
+      <div id="poker-lobby" style="padding:20px;overflow-y:auto;flex:1">
+        <div style="font-size:20px;font-weight:700;color:var(--yellow-t);margin-bottom:16px">🃏 Poker Texas Hold'em</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:20px" id="poker-tables-grid">
+          <div style="color:var(--text2);font-size:13px">Cargando mesas...</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r2);padding:16px;max-width:400px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text2)">Crear nueva mesa</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <label style="font-size:11px;color:var(--text3)">Ciega pequeña</label>
+              <input type="number" id="pk-sb" value="10" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:6px 10px;font-size:13px;outline:none">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <label style="font-size:11px;color:var(--text3)">Ciega grande</label>
+              <input type="number" id="pk-bb" value="20" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:6px 10px;font-size:13px;outline:none">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+              <label style="font-size:11px;color:var(--text3)">Máx. jugadores</label>
+              <select id="pk-max" style="background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:6px 8px;font-size:13px">
+                <option value="2">2</option><option value="4">4</option><option value="6" selected>6</option><option value="8">8</option>
+              </select>
+            </div>
+          </div>
+          <button onclick="pkCreateTable()" style="background:var(--green);color:#000;border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer">Crear mesa</button>
+        </div>
+      </div>
+
+      <!-- BUYIN MODAL -->
+      <div id="pk-buyin-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:24px;width:300px">
+          <div style="font-size:17px;font-weight:700;margin-bottom:12px;color:var(--gold)">💰 Comprar fichas</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:10px" id="pk-buyin-range"></div>
+          <input type="number" id="pk-buyin-input" style="width:100%;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:8px 12px;font-size:14px;outline:none;margin-bottom:12px">
+          <div style="display:flex;gap:8px">
+            <button onclick="pkCloseBuyin()" style="flex:1;padding:9px;background:var(--bg3);color:var(--text2);border:none;border-radius:var(--r);cursor:pointer;font-size:13px">Cancelar</button>
+            <button onclick="pkConfirmBuyin()" style="flex:1;padding:9px;background:var(--green);color:#000;border:none;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:700">Entrar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- POKER TABLE -->
+      <div id="poker-felt-wrap" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+        <div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <button onclick="pkShowLobby()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--r);padding:4px 10px;font-size:12px;cursor:pointer">← Lobby</button>
+          <span style="font-size:13px;font-weight:700;color:var(--gold)" id="pk-table-name">Mesa</span>
+          <span style="font-size:11px;color:var(--text2);background:var(--bg3);border-radius:20px;padding:2px 8px" id="pk-phase">Esperando</span>
+          <span style="margin-left:auto;font-size:13px;font-weight:700;color:var(--green-t)">Pot: <span id="pk-pot">€0</span></span>
+        </div>
+
+        <div style="flex:1;background:radial-gradient(ellipse at center,#1a4a2a 0%,#155523 60%,#0a1a0a 100%);position:relative;overflow:hidden;min-height:260px" id="pk-felt">
+          <div style="position:absolute;inset:8px;border:3px solid #0d3318;border-radius:50%;pointer-events:none;opacity:.4"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);display:flex;flex-direction:column;align-items:center;gap:6px">
+            <div style="display:flex;gap:5px" id="pk-community"></div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4)">BOTE</div>
+            <div style="font-size:15px;font-weight:800;color:var(--gold)" id="pk-felt-pot">€0</div>
+          </div>
+          <div id="pk-seats"></div>
+          <div id="pk-hand-result" style="display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.9);border:2px solid var(--gold);border-radius:12px;padding:20px 28px;text-align:center;z-index:10">
+            <div style="font-size:18px;font-weight:800;color:var(--gold);margin-bottom:8px" id="pk-hr-title">🏆 Ganador</div>
+            <div id="pk-hr-body"></div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg2);border-top:1px solid var(--border);padding:10px 16px;flex-shrink:0">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:8px;text-align:center" id="pk-action-info">Esperando...</div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:6px" id="pk-action-btns">
+            <button id="pk-start-btn" onclick="pkStartHand()" style="display:none;padding:10px 24px;font-size:14px;font-weight:800;background:var(--green);color:#000;border:none;border-radius:var(--r);cursor:pointer">🃏 Repartir cartas</button>
+          </div>
+          <div id="pk-raise-row" style="display:none;justify-content:center;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="number" id="pk-raise-input" style="width:110px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:var(--r);padding:5px 8px;font-size:13px;outline:none">
+            <button onclick="pkSetRaise('half')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--r);padding:3px 8px;font-size:11px;cursor:pointer">½</button>
+            <button onclick="pkSetRaise('pot')" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2);border-radius:var(--r);padding:3px 8px;font-size:11px;cursor:pointer">Pot</button>
+          </div>
+        </div>
+        <div style="background:var(--bg2);border-top:1px solid var(--border);height:80px;overflow-y:auto;padding:4px 12px;flex-shrink:0" id="pk-log"></div>
+      </div>
+    </div>
   </div><!-- app-body -->
 </div><!-- app -->
 
@@ -1145,6 +1226,240 @@ function ensureDiceEngine(){
   if(wrap){cv.width=wrap.clientWidth||300;cv.height=wrap.clientHeight||160;}
   DiceEngine.init(cv);
   diceEngineReady=true;
+}
+
+
+// ============================================================
+// POKER ENGINE
+// ============================================================
+let pkTableId = null;
+let pkPollTimer = null;
+let pkPendingTableId = null;
+let pkLastHash = '';
+let pkGameState = null;
+
+const PK_SEAT_POS = [
+  {top:'85%',left:'50%'},{top:'85%',left:'25%'},{top:'60%',left:'5%'},
+  {top:'20%',left:'15%'},{top:'10%',left:'50%'},{top:'20%',left:'85%'},
+  {top:'60%',left:'95%'},{top:'85%',left:'75%'}
+];
+
+async function pkLoadTables() {
+  try {
+    const tables = await api('/poker/tables');
+    const grid = document.getElementById('poker-tables-grid');
+    if (!tables.length) {
+      grid.innerHTML = '<div style="color:var(--text2);font-size:13px">No hay mesas. ¡Crea una!</div>';
+      return;
+    }
+    grid.innerHTML = tables.map(t => `
+      <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;cursor:pointer" onclick="pkShowBuyin('${t.table_id}',${t.small_blind},${t.big_blind})">
+        <div style="font-size:14px;font-weight:700;color:var(--green-t);margin-bottom:6px">Mesa ${t.table_id}</div>
+        <div style="font-size:12px;color:var(--text2)">Ciegas: €${t.small_blind}/€${t.big_blind}</div>
+        <div style="font-size:12px;color:var(--text2)">Jugadores: ${t.n_players}/${t.max_players}</div>
+        <button style="width:100%;margin-top:8px;padding:7px;background:#155523;color:var(--green-t);border:1px solid var(--green);border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">Entrar</button>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+async function pkCreateTable() {
+  const sb = parseFloat(document.getElementById('pk-sb').value);
+  const bb = parseFloat(document.getElementById('pk-bb').value);
+  const max = parseInt(document.getElementById('pk-max').value);
+  try {
+    const data = await api('/poker/tables', 'POST', {small_blind:sb,big_blind:bb,min_buyin:bb*10,max_buyin:bb*100,max_players:max});
+    pkShowBuyin(data.table_id, sb, bb);
+    pkLoadTables();
+  } catch(e) { toast(e.message,'err'); }
+}
+
+function pkShowBuyin(tableId, sb, bb) {
+  pkPendingTableId = tableId;
+  const min = bb*10, max = bb*100;
+  document.getElementById('pk-buyin-range').textContent = `Mín: €${min} | Máx: €${max}`;
+  document.getElementById('pk-buyin-input').value = Math.min(bb*25, me?.balance||500);
+  document.getElementById('pk-buyin-modal').style.display = 'flex';
+}
+
+function pkCloseBuyin() {
+  document.getElementById('pk-buyin-modal').style.display = 'none';
+}
+
+async function pkConfirmBuyin() {
+  const tableId = pkPendingTableId;
+  const buyin = parseFloat(document.getElementById('pk-buyin-input').value);
+  if (!tableId) { toast('Error: selecciona una mesa','err'); return; }
+  if (!buyin || buyin <= 0) { toast('Importe inválido','err'); return; }
+  pkCloseBuyin();
+  try {
+    await api(`/poker/tables/${tableId}/join`, 'POST', {buyin});
+  } catch(e) { /* already joined is ok */ }
+  pkEnterTable(tableId);
+}
+
+function pkEnterTable(tableId) {
+  pkTableId = tableId;
+  document.getElementById('poker-lobby').style.display = 'none';
+  document.getElementById('poker-felt-wrap').style.display = 'flex';
+  document.getElementById('pk-table-name').textContent = `Mesa ${tableId}`;
+  pkLastHash = '';
+  if (pkPollTimer) clearInterval(pkPollTimer);
+  pkPollTimer = setInterval(() => pkPoll(), 1500);
+  pkPoll();
+}
+
+function pkShowLobby() {
+  if (pkPollTimer) { clearInterval(pkPollTimer); pkPollTimer = null; }
+  if (pkTableId && pkGameState) {
+    const ph = pkGameState.phase;
+    if (!ph || ph==='waiting'||ph==='finished') {
+      api(`/poker/tables/${pkTableId}/leave`,'POST').catch(()=>{});
+    }
+  }
+  pkTableId = null; pkGameState = null; pkLastHash = '';
+  document.getElementById('pk-hand-result').style.display = 'none';
+  document.getElementById('poker-felt-wrap').style.display = 'none';
+  document.getElementById('poker-lobby').style.display = 'block';
+  pkLoadTables();
+}
+
+async function pkPoll() {
+  if (!pkTableId) return;
+  try {
+    const state = await api(`/poker/tables/${pkTableId}/state`);
+    const hash = JSON.stringify(state);
+    if (hash !== pkLastHash) { pkLastHash = hash; pkGameState = state; pkRender(state); }
+  } catch(e) {}
+}
+
+function pkRender(s) {
+  document.getElementById('pk-phase').textContent = pkPhaseLabel(s.phase);
+  document.getElementById('pk-pot').textContent = '€'+s.pot;
+  document.getElementById('pk-felt-pot').textContent = '€'+s.pot;
+  // Community cards
+  const cc = document.getElementById('pk-community');
+  cc.innerHTML = (s.community_cards||[]).map(c=>pkCardHtml(c,true)).join('');
+  // Seats
+  pkRenderSeats(s);
+  // Actions
+  pkRenderActions(s);
+}
+
+function pkRenderSeats(s) {
+  const felt = document.getElementById('pk-seats');
+  felt.innerHTML = '';
+  const myId = me?.id||0;
+  const myIdx = s.players.findIndex(p=>p.user_id===myId);
+  s.players.forEach((p,i) => {
+    const posIdx = myIdx>=0 ? (i-myIdx+s.players.length)%s.players.length : i;
+    const pos = PK_SEAT_POS[posIdx%PK_SEAT_POS.length];
+    const isActive = s.current_player_id===p.user_id;
+    const isMe = p.user_id===myId;
+    const isDealer = s.dealer_username===p.username;
+    const isWinner = s.winners?.some(w=>w.username===p.username);
+    let border = isActive?'var(--yellow)':isMe?'var(--blue)':isWinner?'var(--green)':'var(--border2)';
+    let opacity = p.folded?'0.4':'1';
+    const div = document.createElement('div');
+    div.style.cssText = `position:absolute;top:${pos.top};left:${pos.left};transform:translate(-50%,-50%);`;
+    div.innerHTML = `<div style="background:rgba(0,0,0,.75);border:2px solid ${border};border-radius:8px;padding:5px 8px;min-width:90px;text-align:center;font-size:11px;opacity:${opacity}">
+      ${isDealer?'<span style="position:absolute;top:-8px;right:-8px;width:16px;height:16px;background:var(--yellow);color:#000;border-radius:50%;font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center">D</span>':''}
+      <div style="font-weight:700;color:var(--text)">${escHtml(p.username)}${isMe?' (tú)':''}</div>
+      <div style="color:var(--green-t)">€${p.stack}</div>
+      <div style="color:var(--yellow);min-height:12px;font-size:10px">${p.bet_this_round>0?'€'+p.bet_this_round:''}</div>
+      <div style="display:flex;gap:2px;justify-content:center;margin-top:3px">${(p.hole_cards||[]).map(c=>pkCardHtml(c,false)).join('')}</div>
+    </div>`;
+    felt.appendChild(div);
+  });
+  // Show winners
+  if (s.winners?.length) {
+    const el = document.getElementById('pk-hand-result');
+    el.style.display = 'block';
+    document.getElementById('pk-hr-title').textContent = s.winners.length>1?'🤝 Empate':'🏆 Ganador';
+    document.getElementById('pk-hr-body').innerHTML = s.winners.map(w=>`
+      <div style="color:var(--green-t);font-size:13px">💰 ${escHtml(w.username)} — €${w.amount}</div>
+      <div style="color:var(--text2);font-size:12px">${escHtml(w.hand_name||'')}</div>`).join('');
+    setTimeout(()=>{ el.style.display='none'; }, 5000);
+  }
+}
+
+function pkRenderActions(s) {
+  const info = document.getElementById('pk-action-info');
+  const btns = document.getElementById('pk-action-btns');
+  const startBtn = document.getElementById('pk-start-btn');
+  const raiseRow = document.getElementById('pk-raise-row');
+  const myId = me?.id||0;
+  const isMyTurn = s.current_player_id===myId;
+
+  if (!s.phase||s.phase==='waiting'||s.phase==='finished') {
+    info.textContent = s.n_players<2?'Esperando más jugadores...':'¿Listo?';
+    startBtn.style.display = s.can_start?'block':'none';
+    btns.innerHTML = ''; btns.appendChild(startBtn);
+    raiseRow.style.display = 'none';
+    return;
+  }
+  startBtn.style.display = 'none';
+  if (!isMyTurn) {
+    info.innerHTML = `Turno de <b style="color:var(--yellow)">${escHtml(s.current_player||'...')}</b>`;
+    btns.innerHTML = ''; raiseRow.style.display = 'none';
+    return;
+  }
+  const myP = s.players.find(p=>p.user_id===myId);
+  const toCall = s.current_bet-(myP?.bet_this_round||0);
+  info.innerHTML = `<b style="color:var(--yellow)">Tu turno</b> — Apuesta: €${s.current_bet}${toCall>0?` | Igualar: €${toCall}`:''}`;
+  btns.innerHTML = `
+    <button onclick="pkAction('fold')" style="padding:9px 16px;font-size:13px;font-weight:700;background:#8b0000;color:#fff;border:none;border-radius:6px;cursor:pointer">Fold</button>
+    ${toCall<=0
+      ?`<button onclick="pkAction('check')" style="padding:9px 16px;font-size:13px;font-weight:700;background:#2a4a2a;color:var(--green-t);border:1px solid var(--green);border-radius:6px;cursor:pointer">Pasar</button>`
+      :`<button onclick="pkAction('call')" style="padding:9px 16px;font-size:13px;font-weight:700;background:var(--blue);color:#fff;border:none;border-radius:6px;cursor:pointer">Igualar €${toCall}</button>`
+    }
+    <button onclick="pkDoRaise()" style="padding:9px 16px;font-size:13px;font-weight:700;background:var(--yellow);color:#000;border:none;border-radius:6px;cursor:pointer">Subir</button>
+    <button onclick="pkAction('allin')" style="padding:9px 16px;font-size:13px;font-weight:700;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer">All-in</button>`;
+  raiseRow.style.display = 'flex';
+  document.getElementById('pk-raise-input').value = s.min_raise||s.big_blind||20;
+}
+
+async function pkAction(action, extra={}) {
+  if (!pkTableId) return;
+  try {
+    await api(`/poker/tables/${pkTableId}/action`,'POST',{action,...extra});
+    pkPoll();
+  } catch(e) { toast(e.message,'err'); }
+}
+
+function pkDoRaise() {
+  const amount = parseFloat(document.getElementById('pk-raise-input').value)||20;
+  pkAction('raise',{amount});
+}
+
+function pkStartHand() {
+  document.getElementById('pk-hand-result').style.display = 'none';
+  pkAction('start_hand');
+}
+
+function pkSetRaise(preset) {
+  if (!pkGameState) return;
+  const pot = pkGameState.pot;
+  const min = pkGameState.min_raise||pkGameState.big_blind||20;
+  const amounts = {half:pot/2,pot:pot,'2pot':pot*2};
+  document.getElementById('pk-raise-input').value = Math.max(min,Math.round(amounts[preset]||min));
+}
+
+function pkCardHtml(card, big) {
+  if (!card||card.rank==='?') return `<div style="width:${big?44:30}px;height:${big?62:42}px;background:linear-gradient(135deg,#1a1a4a,#2a2a6a);border:1px solid #3a3a8a;border-radius:4px"></div>`;
+  const red = ['♥','♦'].includes(card.suit);
+  return `<div style="width:${big?44:30}px;height:${big?62:42}px;background:#fff;border:1px solid #ccc;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:${big?14:11}px;font-weight:700;color:${red?'#cc1111':'#111'}">
+    <div>${card.rank}</div><div style="font-size:${big?12:10}px">${card.suit}</div></div>`;
+}
+
+function pkPhaseLabel(p) {
+  return {waiting:'Esperando',preflop:'Pre-flop',flop:'Flop',turn:'Turn',river:'River',showdown:'Showdown',finished:'Terminada'}[p]||p||'';
+}
+
+// Load poker tables when poker view is shown
+const _origShowView = showView;
+function showView(name) {
+  _origShowView(name);
+  if (name==='poker') pkLoadTables();
 }
 
 let toastTimer;
