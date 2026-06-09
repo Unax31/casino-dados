@@ -371,7 +371,8 @@ function enterTable(tableId) {
 }
 
 function showLobby() {
-  if (ws) { ws.close(); ws = null; }
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  ws = null;
   // Only cash out if game not in progress
   if (currentTableId) {
     const phase = gameState?.phase;
@@ -391,31 +392,39 @@ function showLobby() {
   loadTables();
 }
 
+let pollTimer = null;
+let lastStateHash = '';
+
 function connectWS(tableId) {
-  if (ws) ws.close();
-  const wsUrl = API.replace('https://','wss://').replace('http://','ws://');
-  ws = new WebSocket(`${wsUrl}/poker/ws/${tableId}/${token}`);
+  // Use polling instead of WebSocket (works with ngrok free tier)
+  if (pollTimer) clearInterval(pollTimer);
+  log('Conectado a la mesa', '');
+  toast('Conectado ✓', 'ok');
+  // Poll every 1.5 seconds
+  pollTimer = setInterval(() => pollState(tableId), 1500);
+  pollState(tableId);
+}
 
-  ws.onopen = () => {
-    log('Conectado a la mesa', '');
-    toast('Conectado ✓', 'ok');
-  };
-  ws.onclose = (e) => {
-    log('Desconectado', '');
-    if (e.code === 4001) toast('Token inválido — vuelve a hacer login', 'err');
-    else if (e.code === 4004) toast('Mesa no encontrada', 'err');
-  };
-  ws.onerror = (e) => {
-    console.error('WS error:', e);
-    toast('Error de conexión — comprueba que el servidor está activo', 'err');
-  };
+async function pollState(tableId) {
+  try {
+    const state = await apiCall(`/poker/tables/${tableId}/state`);
+    const hash = JSON.stringify(state);
+    if (hash !== lastStateHash) {
+      lastStateHash = hash;
+      handleMessage({type: 'state', data: state});
+    }
+  } catch(e) {
+    // silent fail on poll
+  }
+}
 
-  ws.onmessage = (evt) => {
-    try {
-      const msg = JSON.parse(evt.data);
-      handleMessage(msg);
-    } catch(e) {}
-  };
+function sendAction(action, extra={}) {
+  apiCall(`/poker/tables/${currentTableId}/action`, 'POST', {action, ...extra})
+    .then(res => {
+      if (res.event) handleAction(res.event);
+      pollState(currentTableId);
+    })
+    .catch(e => toast(e.message, 'err'));
 }
 
 function handleMessage(msg) {
@@ -535,7 +544,7 @@ function renderActionPanel(state) {
     info.innerHTML = state.n_players < 2
       ? 'Esperando más jugadores...'
       : `<span class="whose-turn">¿Listo para jugar?</span>`;
-    startBtn.style.display = state.can_start ? 'block' : 'none';
+    document.getElementById('start-btn').style.display = state.can_start ? 'block' : 'none';
     hideActionBtns();
     raiseRow.style.display = 'none';
     return;
@@ -561,7 +570,7 @@ function renderActionPanel(state) {
       ? `<button class="act-btn check-btn" onclick="sendAction('check')">Pasar</button>`
       : `<button class="act-btn call-btn" onclick="sendAction('call')">Igualar €${toCall}</button>`
     }
-    <button class="act-btn raise-btn" onclick="sendAction('raise')">Subir</button>
+    <button class="act-btn raise-btn" onclick="doRaise()">Subir</button>
     <button class="act-btn allin-btn" onclick="sendAction('allin')">All-in</button>
   `;
 
@@ -579,19 +588,18 @@ function hideActionBtns() {
 // -----------------------------------------------------------------------
 // ACTIONS
 // -----------------------------------------------------------------------
-function sendAction(action) {
-  if (!ws || ws.readyState !== WebSocket.OPEN) { toast('Sin conexión', 'err'); return; }
-  const msg = {action};
-  if (action === 'raise') {
-    msg.amount = parseFloat(document.getElementById('raise-input').value) || gameState?.big_blind || 20;
-  }
-  ws.send(JSON.stringify(msg));
-}
+// sendAction defined above in polling section
 
 function startHand() {
-  if (!ws || ws.readyState !== WebSocket.OPEN) { toast('Sin conexión', 'err'); return; }
   document.getElementById('hand-result').style.display = 'none';
-  ws.send(JSON.stringify({action: 'start_hand'}));
+  sendAction('start_hand');
+}
+
+function doRaise() {
+  const amount = parseFloat(document.getElementById('raise-input').value) || gameState?.big_blind || 20;
+  apiCall(`/poker/tables/${currentTableId}/action`, 'POST', {action:'raise', amount})
+    .then(res => { if(res.event) handleAction(res.event); pollState(currentTableId); })
+    .catch(e => toast(e.message, 'err'));
 }
 
 function setRaise(preset) {
