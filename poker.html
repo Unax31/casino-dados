@@ -148,7 +148,7 @@ header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 
 <body>
 
 <header>
-  <a class="back-btn" href="javascript:showLobby()">← Volver</a>
+  <a class="back-btn" href="index.html">← Casino</a>
   <div class="logo">🃏 Poker Texas Hold'em</div>
   <div class="header-info">Saldo: <span id="h-balance">€0</span></div>
 </header>
@@ -201,7 +201,7 @@ header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 
 <!-- POKER TABLE -->
 <div id="poker-table">
   <div class="table-header">
-    <div class="table-name" id="t-name">Mesa</div>
+    <button class="back-btn" onclick="showLobby()" style="margin-right:8px">← Salir</button><div class="table-name" id="t-name">Mesa</div>
     <div class="table-phase" id="t-phase">Esperando</div>
     <div class="pot-display">Pot: <span id="t-pot">€0</span></div>
   </div>
@@ -345,10 +345,18 @@ async function confirmBuyin() {
   const buyin = parseFloat(document.getElementById('buyin-input').value);
   if (!buyin || buyin <= 0) { toast('Introduce un importe válido', 'err'); return; }
   try {
-    await apiCall(`/poker/tables/${pendingTableId}/join`, 'POST', {buyin});
+    const res = await apiCall(`/poker/tables/${pendingTableId}/join`, 'POST', {buyin});
     closeBuyin();
     enterTable(pendingTableId);
-  } catch(e) { toast(e.message, 'err'); }
+  } catch(e) {
+    // If error says already there, just enter
+    if (e.message && e.message.includes('ya estás')) {
+      closeBuyin();
+      enterTable(pendingTableId);
+    } else {
+      toast(e.message, 'err');
+    }
+  }
 }
 
 // -----------------------------------------------------------------------
@@ -364,11 +372,20 @@ function enterTable(tableId) {
 
 function showLobby() {
   if (ws) { ws.close(); ws = null; }
+  // Only cash out if game not in progress
   if (currentTableId) {
-    apiCall(`/poker/tables/${currentTableId}/leave`, 'POST').catch(()=>{});
+    const phase = gameState?.phase;
+    const inHand = phase && !['waiting','finished'].includes(phase);
+    if (!inHand) {
+      apiCall(`/poker/tables/${currentTableId}/leave`, 'POST').catch(()=>{});
+    } else {
+      // Just disconnect, player keeps seat
+      toast('Desconectado — tu lugar sigue reservado', 'ok');
+    }
   }
   currentTableId = null;
   gameState = null;
+  document.getElementById('hand-result').style.display = 'none';
   document.getElementById('poker-table').style.display = 'none';
   document.getElementById('lobby').style.display = 'block';
   loadTables();
@@ -379,9 +396,19 @@ function connectWS(tableId) {
   const wsUrl = API.replace('https://','wss://').replace('http://','ws://');
   ws = new WebSocket(`${wsUrl}/poker/ws/${tableId}/${token}`);
 
-  ws.onopen = () => log('Conectado a la mesa', '');
-  ws.onclose = () => log('Desconectado', '');
-  ws.onerror = () => toast('Error de conexión WebSocket', 'err');
+  ws.onopen = () => {
+    log('Conectado a la mesa', '');
+    toast('Conectado ✓', 'ok');
+  };
+  ws.onclose = (e) => {
+    log('Desconectado', '');
+    if (e.code === 4001) toast('Token inválido — vuelve a hacer login', 'err');
+    else if (e.code === 4004) toast('Mesa no encontrada', 'err');
+  };
+  ws.onerror = (e) => {
+    console.error('WS error:', e);
+    toast('Error de conexión — comprueba que el servidor está activo', 'err');
+  };
 
   ws.onmessage = (evt) => {
     try {
